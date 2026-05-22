@@ -4,6 +4,16 @@
 
 ---
 
+## 🎯 今日速览
+
+$summary_line_1
+
+$summary_line_2
+
+$summary_line_3
+
+---
+
 ## ⚠️ 诚信声明（请先读这里）
 
 本报告是**中长期价值选股**策略，目标是找又便宜又能赚钱的好公司，按季度持有，尝试长期跑赢沪深300。
@@ -13,15 +23,6 @@
 - 回测结果是历史表现，**不代表未来实盘收益**
 - A股市场情绪波动大，即使好公司也可能短期被市场错杀
 - 本报告**不构成任何投资建议**，仅供量化学习研究
-
-**附：短期预测模型当前状态（4 个实验性信号，已知接近随机）：**
-
-| 模型 | 指标 | 数值 | 说明 |
-|---|---|---:|---|
-| ① 明日强势评分 | AUC | $direction_auc | $auc_translation |
-| ② 收益率预测 | R² | $return_r2 | $r2_translation |
-| ③ 横截面排名 | rank-IC | $ranking_ic | $ic_translation |
-| ④ 买卖信号 | macro-F1 | $signal_f1 | $f1_translation |
 
 ---
 
@@ -37,64 +38,13 @@ $backtest_section
 
 ---
 
-## §3 今日速览
-
-$summary_line_1
-
-$summary_line_2
-
-$summary_line_3
-
----
-
-## §4 运行状态
-
-| 模型 | 状态 | 说明 |
-|------|------|------|
-| ① 明日强势评分（DirectionModel）| $direction_status_icon | $direction_status_note |
-| ② 预期收益（ReturnRegressor）| $return_status_icon | $return_status_note |
-| ③ 横截面排名（RankingModel）| $ranking_status_icon | $ranking_status_note |
-| ④ 买卖信号（TradeSignalModel）| $signal_status_icon | $signal_status_note |
-
-使用模型版本：**$model_version**
-
----
-
-## §5 短期实验性预测（已知接近随机，仅供参考）
-
-> 以下 4 个短期预测模型经验证接近随机基线，不具备 alpha，降级到报告末尾展示，仅供学习研究。
-
-### ① 明日强势评分（DirectionModel）
-
-$direction_section
-
----
-
-### ② 预期收益率（ReturnRegressor）
-
-$return_section
-
----
-
-### ③ 横截面排名 Top N（RankingModel）
-
-$ranking_section
-
----
-
-### ④ 买卖点信号（TradeSignalModel）
-
-$signal_section
-
----
-
-## §6 历史准确率
+## §3 历史准确率
 
 $accuracy_section
 
 ---
 
-## §7 运行元数据
+## §4 运行元数据
 
 | 项目 | 值 |
 |------|-----|
@@ -102,7 +52,6 @@ $accuracy_section
 | 总耗时 | $total_seconds 秒 |
 | 数据截至日 | $data_cutoff |
 | 股票池规模 | $universe_size 只 |
-| 模型文件路径 | `$model_paths` |
 | 预测 JSON 落盘 | `$json_path` |
 | 运行错误 | $errors_summary |
 

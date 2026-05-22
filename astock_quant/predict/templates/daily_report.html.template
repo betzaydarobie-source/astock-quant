@@ -33,8 +33,6 @@
   }
   .disclaimer h2 { border-color: #e6a817; color: #856404; }
   .disclaimer ul { margin-left: 20px; color: #856404; margin-top: 8px; }
-  .disclaimer .exp-metrics { margin-top: 12px; }
-  .disclaimer .exp-metrics table { font-size: 0.88em; }
 
   /* 今日速览 */
   .today-summary {
@@ -57,45 +55,6 @@
     margin-bottom: 16px;
   }
 
-  /* 实验性预测区（降级展示） */
-  .experimental {
-    background: #fafafa;
-    border: 1px dashed #ccc;
-    border-radius: 8px;
-    padding: 16px 20px;
-    margin-bottom: 24px;
-  }
-  .experimental h3 { color: #888; font-size: 0.95em; }
-  .experimental-notice {
-    background: #f5f5f5;
-    border-left: 3px solid #aaa;
-    padding: 8px 14px;
-    margin-bottom: 12px;
-    font-size: 0.9em;
-    color: #666;
-  }
-
-  /* 今日总览 4 格 */
-  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
-                  margin-bottom: 16px; }
-  @media(max-width:640px){ .summary-grid { grid-template-columns: repeat(2,1fr); } }
-  .summary-card { background: #fff; border-radius: 8px; padding: 14px;
-                  box-shadow: 0 1px 4px rgba(0,0,0,.08); text-align: center; }
-  .summary-card .big { font-size: 2em; font-weight: bold; color: #2c7be5; }
-  .summary-card .lbl { font-size: 0.8em; color: #888; margin-top: 4px; }
-  .summary-card.ok .big { color: #27ae60; }
-  .summary-card.warn .big { color: #e67e22; }
-  .summary-card.err .big { color: #c0392b; }
-
-  /* 信号分布彩色横条 */
-  .signal-distribution { margin: 8px 0; }
-  .signal-bar { display: block; padding: 6px 12px; margin: 4px 0;
-                min-width: 80px; color: white; font-weight: bold;
-                border-radius: 4px; font-size: 0.9em; }
-  .signal-bar.buy  { background: #52c41a; }
-  .signal-bar.sell { background: #f5222d; }
-  .signal-bar.hold { background: #bfbfbf; color: #333; }
-
   /* 表格 */
   table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
   th { background: #f0f4ff; padding: 7px 10px; text-align: left;
@@ -104,21 +63,6 @@
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: #f9f9f9; }
   td small { color: #888; font-size: 0.85em; margin-left: 4px; }
-  .tag-buy  { display:inline-block; background:#d4edda; color:#155724;
-              border-radius:4px; padding:2px 8px; font-size:.8em; }
-  .tag-sell { display:inline-block; background:#f8d7da; color:#721c24;
-              border-radius:4px; padding:2px 8px; font-size:.8em; }
-  .tag-hold { display:inline-block; background:#e2e3e5; color:#383d41;
-              border-radius:4px; padding:2px 8px; font-size:.8em; }
-  .tag-tp   { display:inline-block; background:#d4edda; color:#155724;
-              border-radius:4px; padding:2px 8px; font-size:.8em; }
-  .tag-sl   { display:inline-block; background:#f8d7da; color:#721c24;
-              border-radius:4px; padding:2px 8px; font-size:.8em; }
-
-  /* ASCII 条图 */
-  .ascii-bar { font-family: monospace; font-size: 0.85em;
-               background: #f8f9fa; padding: 10px 14px; border-radius: 6px;
-               white-space: pre; overflow-x: auto; }
 
   /* 📖 大白话段 */
   .plain-language {
@@ -132,17 +76,10 @@
   }
   .plain-language .emoji { font-size: 18px; margin-right: 6px; }
 
-  /* 状态标记 */
-  .status-ok   { color: #27ae60; font-weight: bold; }
-  .status-warn { color: #e67e22; font-weight: bold; }
-  .status-err  { color: #c0392b; font-weight: bold; }
-
   /* 元数据 */
   .meta { font-size: 0.8em; color: #888; margin-top: 8px; }
   .footer { text-align: center; font-size: 0.75em; color: #aaa;
             margin-top: 32px; padding-top: 16px; border-top: 1px solid #eee; }
-  .section-label { font-size: 0.75em; text-transform: uppercase; letter-spacing: 1px;
-                   color: #aaa; margin-bottom: 4px; }
 </style>
 </head>
 <body>
@@ -169,18 +106,6 @@
       <li>A股市场情绪波动大，即使好公司也可能短期被市场错杀</li>
       <li>本报告所有信号<strong>不构成任何投资建议</strong>，仅供量化学习研究</li>
     </ul>
-    <div class="exp-metrics">
-      <p style="font-size:0.85em;color:#856404;margin-bottom:6px">附：短期预测模型当前状态（4个实验性信号，已知接近随机）：</p>
-      <table>
-        <thead><tr><th>模型</th><th>指标</th><th>数值</th><th>说明</th></tr></thead>
-        <tbody>
-          <tr><td>① 明日强势评分</td><td>AUC</td><td>$direction_auc → 📖</td><td>$auc_translation</td></tr>
-          <tr><td>② 收益率预测</td><td>R²</td><td>$return_r2 → 📖</td><td>$r2_translation</td></tr>
-          <tr><td>③ 横截面排名</td><td>rank-IC</td><td>$ranking_ic → 📖</td><td>$ic_translation</td></tr>
-          <tr><td>④ 买卖信号</td><td>macro-F1</td><td>$signal_f1 → 📖</td><td>$f1_translation</td></tr>
-        </tbody>
-      </table>
-    </div>
   </div>
 
   <!-- ===== §1 本季度价值选股推荐名单 ===== -->
@@ -197,72 +122,20 @@
     $backtest_section
   </div>
 
-  <!-- ===== §3 运行状态 ===== -->
-  <h2>§3 运行状态</h2>
-  <div class="summary-grid">
-    <div class="summary-card $direction_status_cls">
-      <div class="big">$direction_status_icon</div>
-      <div class="lbl">① 明日强势评分</div>
-    </div>
-    <div class="summary-card $return_status_cls">
-      <div class="big">$return_status_icon</div>
-      <div class="lbl">② 预期收益</div>
-    </div>
-    <div class="summary-card $ranking_status_cls">
-      <div class="big">$ranking_status_icon</div>
-      <div class="lbl">③ 横截面排名</div>
-    </div>
-    <div class="summary-card $signal_status_cls">
-      <div class="big">$signal_status_icon</div>
-      <div class="lbl">④ 买卖信号</div>
-    </div>
-  </div>
-  <div class="card">
-    <p>本次覆盖 <strong>$universe_size 只</strong>股票，使用 <strong>$model_version</strong> 模型。</p>
-    <p class="meta">数据截至：$data_cutoff &nbsp;|&nbsp; 模型文件：$model_paths</p>
-  </div>
-
-  <!-- ===== §4 短期实验性预测（降级，已知接近随机）===== -->
-  <h2>§4 短期实验性预测（已知接近随机，仅供参考）</h2>
-  <div class="experimental-notice">
-    ⚠️ 以下 4 个短期预测模型经验证接近随机基线，不具备 alpha，降级到报告末尾展示，仅供学习研究参考。
-  </div>
-
-  <div class="experimental">
-    <h3>① 明日强势评分（DirectionModel）</h3>
-    $direction_section
-  </div>
-
-  <div class="experimental">
-    <h3>② 预期收益率（ReturnRegressor）</h3>
-    $return_section
-  </div>
-
-  <div class="experimental">
-    <h3>③ 横截面排名 Top N（RankingModel）</h3>
-    $ranking_section
-  </div>
-
-  <div class="experimental">
-    <h3>④ 买卖点信号（TradeSignalModel）</h3>
-    $signal_section
-  </div>
-
-  <!-- ===== §5 历史准确率（P14 落盘后可用）===== -->
-  <h2>§5 历史准确率</h2>
+  <!-- ===== §3 历史准确率（P14 落盘后可用）===== -->
+  <h2>§3 历史准确率</h2>
   <div class="card">
     $accuracy_section
   </div>
 
-  <!-- ===== §6 运行元数据 ===== -->
-  <h2>§6 运行元数据</h2>
+  <!-- ===== §4 运行元数据 ===== -->
+  <h2>§4 运行元数据</h2>
   <div class="card">
     <table>
       <tr><td><strong>报告生成时间</strong></td><td>$generated_at</td></tr>
       <tr><td><strong>总耗时</strong></td><td>$total_seconds 秒</td></tr>
       <tr><td><strong>数据截至日</strong></td><td>$data_cutoff</td></tr>
       <tr><td><strong>股票池规模</strong></td><td>$universe_size 只</td></tr>
-      <tr><td><strong>模型文件路径</strong></td><td><code>$model_paths</code></td></tr>
       <tr><td><strong>预测 JSON 落盘</strong></td><td><code>$json_path</code></td></tr>
       <tr><td><strong>运行错误</strong></td><td>$errors_summary</td></tr>
     </table>

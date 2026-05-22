@@ -791,14 +791,18 @@ def _fmt_accuracy_md(accuracy: dict[str, Any] | None) -> str:
 # ---------------------------------------------------------------------------
 
 def render(results: dict[str, Any], output_dir: Path) -> tuple[Path, Path]:
-    """Render daily prediction report to HTML and Markdown.
+    """Render the value-stock daily report to HTML and Markdown.
+
+    报告结构（HTML 与 MD 一致）：今日速览 → 诚信声明 → §1 价值选股推荐名单
+    → §2 策略回测 → §3 历史准确率 → §4 运行元数据。
 
     Args:
         results: dict returned by daily.py with keys:
             report_date, universe_size, generated_at, data_cutoff,
-            total_seconds, model_version, model_paths, json_path,
-            errors, direction, return_, ranking, trade_signal,
-            accuracy (optional),
+            total_seconds, json_path, errors,
+            direction / ranking (optional): 仅用来生成「今日速览」三行速读文字；
+                这 4 个短期模型本身已不在报告里单独展示。
+            accuracy (optional): 历史准确率表数据，None 时显示占位。
             value_picks (optional): list of dicts with keys ticker, composite_score,
                 pe_percentile, pb_percentile, roe, reason
             backtest (optional): dict with strategy_total_return, benchmark_total_return,
@@ -813,56 +817,15 @@ def render(results: dict[str, Any], output_dir: Path) -> tuple[Path, Path]:
 
     report_date = results.get("report_date", datetime.now().strftime("%Y-%m-%d"))
 
-    dir_d = results.get("direction", {})
-    ret_d = results.get("return_", {})
-    rank_d = results.get("ranking", {})
-    sig_d = results.get("trade_signal", {})
     accuracy = results.get("accuracy", None)
     value_picks = results.get("value_picks", None)
     backtest = results.get("backtest", None)
 
-    direction_auc = dir_d.get("metrics", {}).get("auc", "N/A")
-    return_r2 = ret_d.get("metrics", {}).get("r2", "N/A")
-    ranking_ic = rank_d.get("metrics", {}).get("spearman_corr", "N/A")
-    signal_f1 = sig_d.get("metrics", {}).get("macro_f1", "N/A")
-
-    def _fmt_metric(v: Any) -> str:
-        if isinstance(v, float):
-            return f"{v:.4f}"
-        return str(v)
-
-    def _model_ok(d: dict) -> bool | None:
-        if d.get("error"):
-            return False
-        if not d.get("predictions"):
-            return None
-        return True
-
-    dir_ok = _model_ok(dir_d)
-    ret_ok = _model_ok(ret_d)
-    rank_ok = _model_ok(rank_d)
-    sig_ok = _model_ok(sig_d)
-
-    def _status_note(d: dict, name: str) -> str:
-        err = d.get("error")
-        if err:
-            return f"运行错误：{err}"
-        n = len(d.get("predictions", []))
-        if n == 0:
-            return f"{name} 无输出"
-        return f"{name} 完成，{n} 只"
-
     errors = results.get("errors", [])
     errors_summary = "无" if not errors else "; ".join(str(e) for e in errors)
 
-    # today summary
+    # 今日速览三行 —— 仍读 direction / ranking 数据生成速读文字
     today = _render_today_summary(results)
-
-    # metric translations
-    auc_translation = _translate_metric("auc", direction_auc)
-    r2_translation = _translate_metric("r2", return_r2)
-    ic_translation = _translate_metric("rank_ic", ranking_ic)
-    f1_translation = _translate_metric("macro_f1", signal_f1)
 
     subs: dict[str, str] = {
         "report_date": report_date,
@@ -870,37 +833,11 @@ def render(results: dict[str, Any], output_dir: Path) -> tuple[Path, Path]:
         "generated_at": str(results.get("generated_at", datetime.now().isoformat(timespec="seconds"))),
         "data_cutoff": str(results.get("data_cutoff", "?")),
         "total_seconds": str(results.get("total_seconds", "?")),
-        "model_version": str(results.get("model_version", "?")),
-        "model_paths": str(results.get("model_paths", "?")),
         "json_path": str(results.get("json_path", "?")),
         "errors_summary": errors_summary,
-        # disclaimer metrics
-        "direction_auc": _fmt_metric(direction_auc),
-        "return_r2": _fmt_metric(return_r2),
-        "ranking_ic": _fmt_metric(ranking_ic),
-        "signal_f1": _fmt_metric(signal_f1),
-        # metric translations
-        "auc_translation": auc_translation,
-        "r2_translation": r2_translation,
-        "ic_translation": ic_translation,
-        "f1_translation": f1_translation,
-        # today summary lines
         "summary_line_1": today["summary_line_1"],
         "summary_line_2": today["summary_line_2"],
         "summary_line_3": today["summary_line_3"],
-        # status
-        "direction_status_icon": _status_icon(dir_ok),
-        "return_status_icon": _status_icon(ret_ok),
-        "ranking_status_icon": _status_icon(rank_ok),
-        "signal_status_icon": _status_icon(sig_ok),
-        "direction_status_note": _status_note(dir_d, "明日强势评分"),
-        "return_status_note": _status_note(ret_d, "预期收益"),
-        "ranking_status_note": _status_note(rank_d, "横截面排名"),
-        "signal_status_note": _status_note(sig_d, "买卖信号"),
-        "direction_status_cls": _status_cls(dir_ok),
-        "return_status_cls": _status_cls(ret_ok),
-        "ranking_status_cls": _status_cls(rank_ok),
-        "signal_status_cls": _status_cls(sig_ok),
     }
 
     # HTML
@@ -909,10 +846,6 @@ def render(results: dict[str, Any], output_dir: Path) -> tuple[Path, Path]:
     html_subs.update({
         "value_picks_section": _fmt_value_picks_html(value_picks),
         "backtest_section": _fmt_backtest_html(backtest),
-        "direction_section": _fmt_direction_html(dir_d),
-        "return_section": _fmt_return_html(ret_d),
-        "ranking_section": _fmt_ranking_html(rank_d),
-        "signal_section": _fmt_signal_html(sig_d),
         "accuracy_section": _fmt_accuracy_html(accuracy),
     })
     html_content = Template(html_tpl).safe_substitute(html_subs)
@@ -925,10 +858,6 @@ def render(results: dict[str, Any], output_dir: Path) -> tuple[Path, Path]:
     md_subs.update({
         "value_picks_section": _fmt_value_picks_md(value_picks),
         "backtest_section": _fmt_backtest_md(backtest),
-        "direction_section": _fmt_direction_md(dir_d),
-        "return_section": _fmt_return_md(ret_d),
-        "ranking_section": _fmt_ranking_md(rank_d),
-        "signal_section": _fmt_signal_md(sig_d),
         "accuracy_section": _fmt_accuracy_md(accuracy),
     })
     md_content = Template(md_tpl).safe_substitute(md_subs)
