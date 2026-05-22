@@ -8,7 +8,7 @@
     config  →  data  →  factors  →  labels  →  models  →  backtest / signals
                                                     ↘ pipeline 串成端到端
 
-详见 ../P1-架构设计.md。
+详见 ../dev-docs/P1-架构设计.md。
 
 —— 包级 .env 自动加载 ——
 任何 `import astock_quant` 的入口（pipeline / tests / LLM 模块）都会自动从项目根

@@ -169,6 +169,6 @@ def test_default_factor_count_is_27():
     names = [f.name for f in factors]
     assert len(names) == 27, (
         f"default_factors 数量从 27 变成 {len(names)}，"
-        f"请同步更新 P3-因子库.md。当前清单：{names}"
+        f"请同步更新 dev-docs/P3-因子库.md。当前清单：{names}"
     )
     assert len(set(names)) == len(names), "因子 name 重复"

@@ -7,7 +7,7 @@ requires-python = ">=3.11"
 
 # Stage 1 直接依赖刻意保持精简 —— 无重框架（不引 langchain / langgraph / backtrader）。
 # 框架代码作为「实现参考」放在 .p0-repos/，研读后重写，不作为 pip 依赖。
-# 详见 P1-架构设计.md 第 1、6 节。
+# 详见 dev-docs/P1-架构设计.md 第 1、6 节。
 dependencies = [
     "pandas>=2.0",        # 数据处理、panel 数据集
     "numpy>=1.26",        # 数值计算
@@ -30,7 +30,7 @@ dev = [
     "ruff>=0.4",          # lint + format（统一代码风格）
     "ipykernel>=6.29",    # notebook 走读（可选）
 ]
-# Stage 2（P6）LLM 情绪因子可能新增 LLM SDK —— 届时再加，见 P1-架构设计.md 第 6.4 节。
+# Stage 2（P6）LLM 情绪因子可能新增 LLM SDK —— 届时再加，见 dev-docs/P1-架构设计.md 第 6.4 节。
 
 [build-system]
 requires = ["hatchling"]

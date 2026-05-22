@@ -178,7 +178,7 @@ class FactorFrame(BaseModel):
 class Label(BaseModel):
     """单个训练标签 —— labels/ 层产出，按 target_type 喂给对应模型.
 
-    字段意图（与 P1-架构设计.md 3.1 节一致）：
+    字段意图（与 dev-docs/P1-架构设计.md 3.1 节一致）：
         - direction:    value 为 0/1（涨/跌二分类，由 horizon + threshold 决定）
         - return:       value 为 float（未来 N 日收益率，扩展点 stub）
         - ranking:      value 为横截面排序 / 分位（扩展点 stub）
@@ -200,7 +200,7 @@ class Label(BaseModel):
 class Prediction(BaseModel):
     """模型单条预测输出 —— models/ 层产出，下游 backtest / signals 按 target_type 分派.
 
-    字段意图（与 P1-架构设计.md 3.1 节一致）：
+    字段意图（与 dev-docs/P1-架构设计.md 3.1 节一致）：
         - direction:    value 为 0/1（硬分类结果）；score 为 P(涨)（默认阈值 0.5）；
                         proba 是 (P(跌), P(涨)) 元组，便于做不同阈值的 backtest 实验
         - return:       value 为预测收益率（float）；score 同 value（扩展点 stub）

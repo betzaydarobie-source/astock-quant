@@ -53,7 +53,7 @@ def direction_label(
 ) -> pd.Series:
     """① 涨跌方向二分类标签 —— Stage 1 做透.
 
-    标签定义（与 P1-架构设计.md 3.5 节一致）：
+    标签定义（与 dev-docs/P1-架构设计.md 3.5 节一致）：
         未来 `horizon` 个交易日的累计收益率 > `threshold` → 1（涨），否则 0（跌/平）。
         累计收益率 = close[T + horizon] / close[T] - 1。
 

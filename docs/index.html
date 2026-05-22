@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A股 每日预测报告 · 归档</title>
+<title>A股 价值选股报告 · 归档</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -13,13 +13,13 @@
     min-height: 100vh;
   }
   .header {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    background: linear-gradient(135deg, #14532d 0%, #166534 100%);
     color: #fff;
     padding: 2rem 1rem;
     text-align: center;
   }
   .header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: 0.05em; }
-  .header .subtitle { margin-top: 0.4rem; font-size: 0.9rem; opacity: 0.7; }
+  .header .subtitle { margin-top: 0.4rem; font-size: 0.9rem; opacity: 0.8; }
   .container { max-width: 860px; margin: 0 auto; padding: 1.5rem 1rem; }
   .card {
     background: #fff;
@@ -29,31 +29,56 @@
     margin-bottom: 1.5rem;
   }
   .card-title { font-size: 1rem; font-weight: 600; color: #555; margin-bottom: 1rem; }
+  .intro {
+    background: #e6f4ea; border-left: 3px solid #16a34a;
+    padding: 1rem 1.2rem; border-radius: 0 8px 8px 0;
+    font-size: 0.9rem; color: #14532d; line-height: 1.7;
+  }
+  .intro strong { color: #14532d; }
   .latest-info { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-  .latest-date { font-size: 2rem; font-weight: 700; color: #1a1a2e; }
+  .latest-date { font-size: 2rem; font-weight: 700; color: #14532d; }
   .badge {
     display: inline-block; padding: 0.25rem 0.6rem; border-radius: 4px;
     font-size: 0.8rem; font-weight: 600;
   }
   .badge.ok { background: #d4edda; color: #155724; }
   .badge.warn { background: #fff3cd; color: #856404; }
-  .metrics-row { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 0.8rem; }
-  .metric { font-size: 0.85rem; color: #666; }
-  .metric span { font-weight: 600; color: #333; }
   .btn-primary {
-    display: inline-block; background: #1a1a2e; color: #fff;
+    display: inline-block; background: #16a34a; color: #fff;
     padding: 0.5rem 1.2rem; border-radius: 6px; text-decoration: none;
-    font-size: 0.9rem; font-weight: 500; margin-top: 0.8rem;
+    font-size: 0.9rem; font-weight: 500; margin-top: 1rem;
   }
-  .btn-primary:hover { background: #2a2a4e; }
+  .btn-primary:hover { background: #15803d; }
   .btn {
-    color: #1a1a2e; text-decoration: none; font-size: 0.85rem; font-weight: 500;
+    color: #166534; text-decoration: none; font-size: 0.85rem; font-weight: 500;
   }
   .btn:hover { text-decoration: underline; }
+  /* 回测小条 */
+  .backtest-strip {
+    margin-top: 1rem; padding: 1rem 1.2rem;
+    background: #f6f8ff; border-radius: 8px; border-left: 3px solid #2c7be5;
+  }
+  .bt-title { font-size: 0.85rem; color: #555; font-weight: 600; margin-bottom: 0.7rem; }
+  .bt-metrics { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+  .bt-item { min-width: 90px; }
+  .bt-val { font-size: 1.3rem; font-weight: 700; color: #333; }
+  .bt-val.up { color: #16a34a; }
+  .bt-val.down { color: #c0392b; }
+  .bt-lbl { font-size: 0.72rem; color: #888; margin-top: 0.2rem; }
+  .bt-caveat {
+    margin-top: 0.7rem; font-size: 0.76rem; color: #b45309; line-height: 1.6;
+  }
+  /* 标签 */
+  .tag {
+    display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px;
+    font-size: 0.72rem; font-weight: 600;
+  }
+  .tag-value { background: #d4edda; color: #155724; }
+  .tag-old { background: #e2e3e5; color: #6c757d; }
   table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
   th { background: #f0f0f0; text-align: left; padding: 0.6rem 0.8rem; font-size: 0.8rem; color: #666; }
   td { padding: 0.55rem 0.8rem; border-bottom: 1px solid #f0f0f0; }
-  tr.latest-row td { background: #f0f6ff; font-weight: 600; }
+  tr.latest-row td { background: #f0fdf4; font-weight: 600; }
   tr:hover td { background: #fafafa; }
   .footer {
     text-align: center; padding: 1.5rem 1rem 2rem;
@@ -68,62 +93,77 @@
     .latest-date { font-size: 1.4rem; }
     table { font-size: 0.8rem; }
     th, td { padding: 0.45rem 0.5rem; }
+    .bt-val { font-size: 1.1rem; }
   }
 </style>
 </head>
 <body>
 <div class="header">
-  <h1>A股 每日预测报告 · 归档</h1>
-  <div class="subtitle">量化学习研究项目 · 更新于 2026-05-22 16:36</div>
+  <h1>A股 价值选股报告 · 归档</h1>
+  <div class="subtitle">量化学习研究项目 · 更新于 2026-05-22 20:47</div>
 </div>
 <div class="container">
 
   <div class="card">
-    <div class="card-title">今日报告（2026-05-22）</div>
+    <div class="intro">
+      这个项目用电脑程序，从沪深300里挑出<strong>又便宜（市盈率、市净率低）又能赚钱（净资产收益率高）</strong>的公司，
+      模拟「每季度调一次仓、长期持有」，看能不能跑赢大盘（沪深300指数）。
+      <br>本项目<strong>2026-05-22 起方法已升级</strong>：从早期的「猜明天涨还是跌」（被验证基本等于抛硬币）
+      改成了现在的「价值选股」。更早的报告是旧方法，留作历史记录。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">最新一期报告（2026-05-22）</div>
     <div class="latest-info">
       <div class="latest-date">2026-05-22</div>
       <span class="badge ok">已生成</span>
     </div>
-    <div class="metrics-row">
-      <div class="metric">方向 AUC <span>0.7416</span></div>
-      <div class="metric">收益 R² <span>-0.0044</span></div>
-      <div class="metric">预测标的 <span>300</span></div>
+    <div><a href="reports/daily_report_2026-05-22.html" class="btn-primary">点击查看本期推荐名单 →</a></div>
+    <div class="backtest-strip">
+      <div class="bt-title">策略历史回测（2022-01 ~ 2026-04）</div>
+      <div class="bt-metrics">
+        <div class="bt-item"><div class="bt-val up">+20.73%</div><div class="bt-lbl">策略累计收益</div></div>
+        <div class="bt-item"><div class="bt-val down">-7.96%</div><div class="bt-lbl">沪深300 同期</div></div>
+        <div class="bt-item"><div class="bt-val up">+6.25%</div><div class="bt-lbl">年化超额</div></div>
+        <div class="bt-item"><div class="bt-val">0.46</div><div class="bt-lbl">信息比率 IR</div></div>
+      </div>
+      <p class="bt-caveat">⚠️ 这是一段约 4 年、偏乐观的历史回测结果（样本小、超额主要靠 2024 年单年、IR 偏低）。
+      「回测跑赢」不等于「未来实盘能赚钱」，仅供学习研究参考。</p>
     </div>
-    <div><a href="reports/daily_report_2026-05-22.html" class="btn-primary">点击查看 →</a></div>
   </div>
 
   <div class="card">
-    <div class="card-title">历史归档（最近 30 条）</div>
+    <div class="card-title">历史归档（最近 30 期）</div>
     <div style="overflow-x:auto">
     <table>
       <thead>
         <tr>
           <th>日期</th>
-          <th>方向 AUC</th>
-          <th>收益 R²</th>
-          <th>标的数</th>
+          <th>方法</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-<tr class="latest-row"><td><a href="reports/daily_report_2026-05-22.html">2026-05-22</a></td><td>0.7416</td><td>-0.0044</td><td>300</td><td><a href="reports/daily_report_2026-05-22.html" class="btn">查看 →</a></td></tr>
-<tr class="hist-row"><td><a href="reports/daily_report_2026-05-21.html">2026-05-21</a></td><td>0.4898</td><td>-0.0048</td><td>300</td><td><a href="reports/daily_report_2026-05-21.html" class="btn">查看 →</a></td></tr>
-<tr class="hist-row"><td><a href="reports/daily_report_2026-05-19.html">2026-05-19</a></td><td>0.4898</td><td>-0.0048</td><td>300</td><td><a href="reports/daily_report_2026-05-19.html" class="btn">查看 →</a></td></tr>
-<tr class="hist-row"><td><a href="reports/daily_report_2026-05-17.html">2026-05-17</a></td><td>0.4948</td><td>-0.0044</td><td>300</td><td><a href="reports/daily_report_2026-05-17.html" class="btn">查看 →</a></td></tr>
-<tr class="hist-row"><td><a href="reports/daily_report_2026-05-16.html">2026-05-16</a></td><td>0.4948</td><td>-0.0048</td><td>300</td><td><a href="reports/daily_report_2026-05-16.html" class="btn">查看 →</a></td></tr>
+<tr class="latest-row"><td><a href="reports/daily_report_2026-05-22.html">2026-05-22</a></td><td><span class="tag tag-value">价值选股</span></td><td><a href="reports/daily_report_2026-05-22.html" class="btn">查看 →</a></td></tr>
+<tr class="hist-row"><td><a href="reports/daily_report_2026-05-21.html">2026-05-21</a></td><td><span class="tag tag-old">旧·涨跌预测</span></td><td><a href="reports/daily_report_2026-05-21.html" class="btn">查看 →</a></td></tr>
+<tr class="hist-row"><td><a href="reports/daily_report_2026-05-19.html">2026-05-19</a></td><td><span class="tag tag-old">旧·涨跌预测</span></td><td><a href="reports/daily_report_2026-05-19.html" class="btn">查看 →</a></td></tr>
+<tr class="hist-row"><td><a href="reports/daily_report_2026-05-17.html">2026-05-17</a></td><td><span class="tag tag-old">旧·涨跌预测</span></td><td><a href="reports/daily_report_2026-05-17.html" class="btn">查看 →</a></td></tr>
+<tr class="hist-row"><td><a href="reports/daily_report_2026-05-16.html">2026-05-16</a></td><td><span class="tag tag-old">旧·涨跌预测</span></td><td><a href="reports/daily_report_2026-05-16.html" class="btn">查看 →</a></td></tr>
       </tbody>
     </table>
     </div>
   </div>
 
   <div class="disclaimer">
-    ⚠️ 本站为量化学习 / 研究项目，所有预测结果仅供学习参考，<strong>不构成任何投资建议</strong>。
-    市场有风险，投资须谨慎。模型预测存在误差，请勿据此进行实盘操作。
+    ⚠️ 本站为量化<strong>学习 / 研究</strong>项目，所有内容仅供学习参考，<strong>不构成任何投资建议</strong>。
+    回测「跑赢沪深300」是一段偏乐观的历史结果，不代表未来实盘能赚钱。
+    市场有风险，投资须谨慎，请勿据此进行实盘操作。
   </div>
 
 </div>
 <div class="footer">
-  A股量化预测系统 · Stage 4 · 数据来源：AkShare &nbsp;|&nbsp; 非投资建议
+  A股量化价值选股学习项目 · 数据来源：AkShare &nbsp;|&nbsp; 非投资建议
 </div>
 </body>
 </html>
