@@ -289,6 +289,8 @@ def _render_plain_language(section: str, section_data: dict[str, Any]) -> str:
         n_tp = sum(1 for p in preds if getattr(p, "value", None) == 1.0)
         n_sl = sum(1 for p in preds if getattr(p, "value", None) == -1.0)
         n_hold = sum(1 for p in preds if getattr(p, "value", None) == 0.0)
+        # P25b：用真实 macro-F1，不再写死「33%」假数字（三选一瞎猜基线才是 0.33）
+        macro_f1 = metrics.get("macro_f1", 0.0)
         buy_preds = section_data.get("buy_predictions", [])
         if n_tp == 0 and n_sl == 0:
             return (
@@ -302,12 +304,12 @@ def _render_plain_language(section: str, section_data: dict[str, Any]) -> str:
             top_conf = max((getattr(p, "score", 0.0) for p in buy_preds), default=0.0)
             return (
                 f"📖 今天 buy 信号 {n_tp}：{top_buy_names}，置信度 {top_conf:.2f}。"
-                f"但模型 macro accuracy≈33% 跟瞎猜一样，**不构成投资建议**。"
+                f"模型 macro-F1≈{macro_f1:.2f}（三选一瞎猜基线≈0.33），信号偏弱，不构成投资建议。"
             )
         if n_sl > 0:
             return (
                 f"📖 今天 sell 信号 {n_sl}，hold {n_hold}。"
-                f"同款提醒：模型 macro acc≈33%，不构成投资建议。"
+                f"模型 macro-F1≈{macro_f1:.2f}（三选一瞎猜基线≈0.33），信号偏弱，不构成投资建议。"
             )
 
     return ""
