@@ -114,14 +114,14 @@
 <div class="container">
 
   <h1>📅 A股每日预测报告</h1>
-  <p class="meta">预测日期：2026-05-22 &nbsp;|&nbsp; 股票池：300 只 &nbsp;|&nbsp; 生成时间：2026-05-22T12:54:38</p>
+  <p class="meta">预测日期：2026-05-22 &nbsp;|&nbsp; 股票池：300 只 &nbsp;|&nbsp; 生成时间：2026-05-22T13:53:02</p>
 
   <!-- ===== 今日一句话总结（最显眼位置，第一眼看到）===== -->
   <div class="today-summary">
     <h2>🎯 今日一句话总结</h2>
-    <p class="summary-line">📕 [教学示例 · ① 涨跌方向] 本模型经网格实验（20 组标签配置）证实：用散户可得的量价 + 财务因子，预测 A股 个股短期涨跌方向【做不到】。下方预测分接近相同（score std=0.0023）、方向一边倒，是『短期方向不可预测』这一市场规律的真实体现 —— 保留作教学示例，请勿据此操作。</p>
+    <p class="summary-line">🎯 今日一句话：① 强势评分最高的是 泰格医药（明日走强概率 0.29），全场 0 只评分 ≥ 0.5。</p>
     <p class="summary-line">🥇 如果非要选 1 只：上港集团（600018），但模型自己说 0.51 的把握。</p>
-    <p class="summary-line honesty">⚠️ 诚信结论：模型今天对所有票都看跌，但置信度非常低（< 0.3）—— 极可能是大盘整体震荡的体现，不要跟单。</p>
+    <p class="summary-line honesty">⚠️ 诚信结论：① 强势评分 AUC≈0.74（有区分力但偏弱、且预测的是较少见的大涨事件）；② ③ ④ 信号也弱。全部仅供学习研究，**不构成投资建议**。</p>
   </div>
 
   <!-- ===== 诚信声明（红线，永远不可省略）===== -->
@@ -129,9 +129,9 @@
     <h2>⚠️ 诚信声明 —— 请在查看预测前仔细阅读</h2>
     <div class="metrics">
       <div>
-        <div class="metric-val">AUC = 0.4978</div>
-        <div class="metric-lbl">涨跌方向（随机猜 AUC=0.5）</div>
-        <div class="metric-translation">📖 比抛硬币还差，模型在帮倒忙</div>
+        <div class="metric-val">AUC = 0.7416</div>
+        <div class="metric-lbl">明日强势评分（随机猜 AUC=0.5）</div>
+        <div class="metric-translation">📖 有真实区分力（能挑出较可能走强的票），但预测的是少见的大涨、AUC 偏乐观，不代表能稳定盈利</div>
       </div>
       <div>
         <div class="metric-val">R² = -0.0044</div>
@@ -162,7 +162,7 @@
   <div class="summary-grid">
     <div class="summary-card ok">
       <div class="big">✅</div>
-      <div class="lbl">① 涨跌方向</div>
+      <div class="lbl">① 明日强势评分</div>
     </div>
     <div class="summary-card ok">
       <div class="big">✅</div>
@@ -182,40 +182,39 @@
     <p class="meta">数据截至：2026-05-22 &nbsp;|&nbsp; 模型文件：direction=artifacts/models/direction_2026-05-22.lgb; return_=artifacts/models/return_2026-05-22.lgb; ranking=artifacts/models/ranking_2026-05-22.lgb; trade_signal=artifacts/models/trade_signal_2026-05-22.lgb</p>
   </div>
 
-  <!-- ===== §2 ① 涨跌方向 ===== -->
-  <h2>§2 ① 涨跌方向（DirectionModel）</h2>
+  <!-- ===== §2 ① 明日强势评分 ===== -->
+  <h2>§2 ① 明日强势评分（DirectionModel）</h2>
   <div class="card">
-<div class="signal-distribution"><div class="signal-bar buy" style="width:0%;min-width:60px"><span>↑ 看涨 0 只</span></div><div class="signal-bar sell" style="width:100%;min-width:60px"><span>↓ 看跌 300 只</span></div><div class="signal-bar hold" style="width:0%;min-width:60px"><span>→ 中性 0 只</span></div></div>
-<p class="meta" style="margin-top:8px">覆盖 300 只 | 看涨 0 | 看跌 300</p>
+<p class="meta">覆盖 300 只 · 模型给每只票打「明日走强概率」分（0~1，越高 = 越可能明日涨 &gt;3%）</p>
 </div>
 <div class="card">
 <table>
-<thead><tr><th>股票</th><th>方向</th><th>置信度</th></tr></thead>
-<tbody><tr><td>000001 <small>平安银行</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
-<tr><td>000002 <small>万  科Ａ</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
-<tr><td>000063 <small>中兴通讯</small></td><td><span class='tag-sell'>跌</span></td><td>0.463</td></tr>
-<tr><td>000100 <small>TCL科技</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
-<tr><td>000157 <small>中联重科</small></td><td><span class='tag-sell'>跌</span></td><td>0.470</td></tr>
-<tr><td>000166 <small>申万宏源</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
-<tr><td>000301 <small>东方盛虹</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
-<tr><td>000333 <small>美的集团</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
-<tr><td>000338 <small>潍柴动力</small></td><td><span class='tag-sell'>跌</span></td><td>0.464</td></tr>
-<tr><td>000408 <small>藏格矿业</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
-<tr><td>000425 <small>徐工机械</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
-<tr><td>000538 <small>云南白药</small></td><td><span class='tag-sell'>跌</span></td><td>0.471</td></tr>
-<tr><td>000568 <small>泸州老窖</small></td><td><span class='tag-sell'>跌</span></td><td>0.470</td></tr>
-<tr><td>000596 <small>古井贡酒</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
-<tr><td>000617 <small>中油资本</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
-<tr><td>000625 <small>长安汽车</small></td><td><span class='tag-sell'>跌</span></td><td>0.470</td></tr>
-<tr><td>000630 <small>铜陵有色</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
-<tr><td>000651 <small>格力电器</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
-<tr><td>000661 <small>长春高新</small></td><td><span class='tag-sell'>跌</span></td><td>0.466</td></tr>
-<tr><td>000708 <small>中信特钢</small></td><td><span class='tag-sell'>跌</span></td><td>0.470</td></tr>
-<tr><td colspan='3' style='color:#aaa'>… 共 300 只，仅显示前 20</td></tr>
+<thead><tr><th>排名</th><th>股票</th><th>强势评分</th></tr></thead>
+<tbody><tr><td>#1</td><td>300347 <small>泰格医药</small></td><td>0.292</td></tr>
+<tr><td>#2</td><td>688012 <small>中微公司</small></td><td>0.229</td></tr>
+<tr><td>#3</td><td>688041 <small>海光信息</small></td><td>0.228</td></tr>
+<tr><td>#4</td><td>000975 <small>山金国际</small></td><td>0.227</td></tr>
+<tr><td>#5</td><td>688008 <small>澜起科技</small></td><td>0.221</td></tr>
+<tr><td>#6</td><td>300782 <small>卓胜微</small></td><td>0.221</td></tr>
+<tr><td>#7</td><td>002384 <small>东山精密</small></td><td>0.208</td></tr>
+<tr><td>#8</td><td>600522 <small>中天科技</small></td><td>0.207</td></tr>
+<tr><td>#9</td><td>300661 <small>圣邦股份</small></td><td>0.201</td></tr>
+<tr><td>#10</td><td>300442 <small>润泽科技</small></td><td>0.200</td></tr>
+<tr><td>#11</td><td>600176 <small>中国巨石</small></td><td>0.200</td></tr>
+<tr><td>#12</td><td>688256 <small>寒武纪</small></td><td>0.199</td></tr>
+<tr><td>#13</td><td>688047 <small>龙芯中科</small></td><td>0.199</td></tr>
+<tr><td>#14</td><td>300476 <small>胜宏科技</small></td><td>0.198</td></tr>
+<tr><td>#15</td><td>688126 <small>沪硅产业</small></td><td>0.198</td></tr>
+<tr><td>#16</td><td>002709 <small>天赐材料</small></td><td>0.197</td></tr>
+<tr><td>#17</td><td>600584 <small>长电科技</small></td><td>0.194</td></tr>
+<tr><td>#18</td><td>300394 <small>天孚通信</small></td><td>0.189</td></tr>
+<tr><td>#19</td><td>000938 <small>紫光股份</small></td><td>0.188</td></tr>
+<tr><td>#20</td><td>688082 <small>盛美上海</small></td><td>0.186</td></tr>
+<tr><td colspan='3' style='color:#aaa'>… 共 300 只，仅显示评分最高 20</td></tr>
 </tbody>
 </table>
 </div>
-<div class="plain-language"><span class="emoji">📖</span><span class="text">📖 模型今天对 300 只全部看跌，但预测分（avg 0.47）都低于但接近 0.5，说明**模型自己也没把握**。**不要跟单卖出**——很可能是大盘当天整体震荡的副作用。</span></div>
+<div class="plain-language"><span class="emoji">📖</span><span class="text">📖 模型今天评分最高的是 泰格医药（0.29），全场 0 只评分 ≥ 0.5。评分 = 模型估计的「明日涨 >3%」概率，AUC=0.74（有区分力但偏弱，且预测的是较少见的大涨事件）。高分 ≠ 稳赚，不构成投资建议。</span></div>
 
   <!-- ===== §3 ② 预期收益 ===== -->
   <h2>§3 ② 预期收益率（ReturnRegressor）</h2>
@@ -304,8 +303,8 @@
   <h2>§7 运行元数据</h2>
   <div class="card">
     <table>
-      <tr><td><strong>报告生成时间</strong></td><td>2026-05-22T12:54:38</td></tr>
-      <tr><td><strong>总耗时</strong></td><td>382.8456070423126 秒</td></tr>
+      <tr><td><strong>报告生成时间</strong></td><td>2026-05-22T13:53:02</td></tr>
+      <tr><td><strong>总耗时</strong></td><td>400.7050521373749 秒</td></tr>
       <tr><td><strong>数据截至日</strong></td><td>2026-05-22</td></tr>
       <tr><td><strong>股票池规模</strong></td><td>300 只</td></tr>
       <tr><td><strong>模型文件路径</strong></td><td><code>direction=artifacts/models/direction_2026-05-22.lgb; return_=artifacts/models/return_2026-05-22.lgb; ranking=artifacts/models/ranking_2026-05-22.lgb; trade_signal=artifacts/models/trade_signal_2026-05-22.lgb</code></td></tr>
