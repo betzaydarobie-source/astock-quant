@@ -153,7 +153,7 @@ def _render_today_summary(results: dict[str, Any]) -> dict[str, str]:
     line3 = (
         f"⚠️ 诚信结论：这套价值选股策略在历史回测里有跑赢沪深300的迹象"
         f"{excess_str}，但「回测跑赢」不等于「实盘能赚钱」。"
-        f"全部仅供学习研究，**不构成投资建议**。"
+        f"全部仅供学习研究，不构成投资建议。"
     )
     return {"summary_line_1": line1, "summary_line_2": line2, "summary_line_3": line3}
 
