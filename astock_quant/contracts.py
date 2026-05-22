@@ -47,17 +47,29 @@ class FinancialMetrics(BaseModel):
     A股 财务数据按报告期（季报/年报）发布，`report_period` 标识是哪一期。
     各字段口径：盈利能力来自季报快照，估值（pe/pb）来自实时行情快照。
     数据源拼不齐的字段一律允许 None —— fundamental 因子自己处理缺失。
+
+    防 look-ahead 关键：`publish_date`（财报实际可见日）。报告期末日 != 可见日 ——
+    年报 / 一季报最晚 4/30 才披露，半年报 8/31，三季报 10/31。因子层对齐到交易日 T
+    时必须用 `publish_date <= T` 截断，而非 `report_period <= T`，否则会用到「当时
+    还没公布」的财报（典型未来函数）。详见 data/fundamentals.py 的口径说明。
     """
 
     ticker: str
-    report_period: str  # 报告期，如 "20251231"（mootdx updated_date）
-    eps: float | None = None  # 每股收益
+    report_period: str  # 报告期末日，如 "20251231"
+    publish_date: str | None = None  # 财报实际可见日 "YYYYMMDD"（防 look-ahead 用，见类 docstring）
+    eps: float | None = None  # 每股收益（同花顺口径为「累计 YTD」，TTM 换算见 fundamentals.py）
     roe: float | None = None  # 净资产收益率（%）
     revenue: float | None = None  # 营业总收入（元）
     net_profit: float | None = None  # 净利润（元）
     total_assets: float | None = None  # 总资产（元）
     net_assets: float | None = None  # 净资产 / 所有者权益（元）
     bvps: float | None = None  # 每股净资产
+    eps_ttm: float | None = None  # 每股收益 TTM（滚动 4 季，由 fundamentals.py 算出）
+    gross_margin: float | None = None  # 销售毛利率（%）
+    net_margin: float | None = None  # 销售净利率（%）
+    debt_ratio: float | None = None  # 资产负债率（%）
+    dividend_per_share: float | None = None  # 近 12 个月每股现金分红（元，税前）
+    dividend_yield: float | None = None  # 股息率（近 12 月每股分红 / 当时股价）
     pe: float | None = None  # 市盈率 TTM（来自实时行情快照）
     pb: float | None = None  # 市净率（来自实时行情快照）
     total_share: float | None = None  # 总股本（股）

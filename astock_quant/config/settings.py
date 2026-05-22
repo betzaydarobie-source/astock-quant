@@ -168,7 +168,13 @@ class SplitConfig:
 
     train_end: str = "2025-06-30"  # 训练集截止日
     valid_end: str = "2026-05-01"  # 验证集截止日
-    purge_gap: int = 10  # purge 间隔（交易日），需 >= LABEL.horizon
+    purge_gap: int = 10  # purge 间隔（交易日），需 >= LABEL.horizon（①②③④ 短窗标签用）
+
+    # —— 价值选股专属（T3/T4 价值改造）——
+    # value_ranking_label 的 horizon 是 60（一个季度），purge_gap 必须相应放大到 >= 60，
+    # 否则训练集尾部样本的「未来 60 日相对收益」会跨切线泄漏进验证集（look-ahead）。
+    # 单独留一个字段，不动短窗任务的 purge_gap=10，互不干扰。
+    value_purge_gap: int = 60  # 价值标签 purge 间隔（交易日），需 >= LABEL.value_horizon
 
 
 @dataclass(frozen=True)
@@ -181,11 +187,47 @@ class LabelConfig:
         模型才有真实区分力（300 只实测 79 棵树 / AUC 0.74）。
     direction_threshold：① 的收益阈值 —— 未来 direction_horizon 日收益 > 阈值记为 1。
         P25：0.0（单纯涨跌，实测退化）→ 0.03（明日涨幅 >3% = 明显走强）。
+    value_horizon：价值选股专属预测窗口（T3 价值改造）。短期涨跌（5 日尺度）已被
+        反复证明接近随机；价值因子（便宜 + 赚钱的好公司）只在季度/年尺度才显现
+        超额收益。一个季度约 60 个交易日（A股 每年约 242 个交易日 ÷ 4 ≈ 60），
+        所以价值标签预测「未来一个季度的横截面相对收益排名」。
     """
 
     horizon: int = 5  # ②③④ 预测未来 N 个交易日
     direction_horizon: int = 1  # ① 专属：预测明日（P25 改，原与 horizon 共用 5）
     direction_threshold: float = 0.03  # ① 阈值：明日涨幅 >3% 记为「走强」（P25 改，原 0.0）
+    value_horizon: int = 60  # 价值选股专属：预测未来一个季度（~60 交易日）的相对收益
+
+
+@dataclass(frozen=True)
+class ValueScoreConfig:
+    """价值+质量综合打分参数 —— T2 价值选股改造，factors/value_score.py 用.
+
+    综合分 = 价值分 × value_weight + 质量分 × quality_weight + 成长分 × growth_weight。
+    三个维度各由若干因子按「每日横截面」标准化后等权合成（详见 value_score.py）。
+
+    权重默认「价值与质量并重、成长辅助」—— 价值投资的核心是「便宜（价值）的好公司
+    （质量）」，成长是加分项但单独追高成长容易买贵，故权重低于前两者。三者之和不强制
+    为 1（value_score 内部会按权重和归一化），但默认给和为 1 的直观值。
+
+    方向约定（关键）：每个因子在 value_score 里都会被转成「越大越好」再做横截面排名 ——
+    低 PE/PB/负债是好事（取负向），高 ROE/股息/毛利/成长是好事（取正向）。
+    """
+
+    # —— 三维权重 ——
+    value_weight: float = 0.4    # 价值维度（低 PE / 低 PB / 高股息）
+    quality_weight: float = 0.4  # 质量维度（高 ROE / 高净利率 / 高毛利率 / 低负债）
+    growth_weight: float = 0.2   # 成长维度（营收同比 / 净利同比增速）
+
+    # —— 横截面极端值处理 ——
+    # 标准化前对每日横截面做分位截尾（防个别极端 PE/增速主导排名）。
+    # 必须是「按日横截面」分位，不是全样本分位（项目踩过 winsorize 全样本 look-ahead 坑）。
+    winsor_lower: float = 0.05  # 每日横截面下 5% 分位截尾
+    winsor_upper: float = 0.95  # 每日横截面上 5% 分位截尾
+
+    # —— 单日有效横截面最小股票数 ——
+    # 某日横截面有效票数少于此值时，该日横截面排名无统计意义 → 该日该维度分置 NaN。
+    min_cross_section: int = 5
 
 
 @dataclass(frozen=True)
@@ -212,6 +254,7 @@ class Settings:
     factor_windows: FactorWindows = field(default_factory=FactorWindows)
     split: SplitConfig = field(default_factory=SplitConfig)
     label: LabelConfig = field(default_factory=LabelConfig)
+    value_score: ValueScoreConfig = field(default_factory=ValueScoreConfig)
 
 
 # 全局单例 —— 所有模块 `from astock_quant.config.settings import SETTINGS`

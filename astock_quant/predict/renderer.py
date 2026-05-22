@@ -555,6 +555,181 @@ def _fmt_signal_md(d: dict[str, Any]) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Value picks section — quarterly recommended buy list
+# ---------------------------------------------------------------------------
+
+def _fmt_value_picks_html(value_picks: list[dict[str, Any]] | None) -> str:
+    """Render quarterly value stock picks as HTML table."""
+    if not value_picks:
+        return (
+            "<div class='card'><p class='meta'>价值选股数据尚未就绪"
+            "（factor-engineer / strategy-engineer 完成后自动填充）。</p></div>"
+        )
+    rows = ""
+    for i, pick in enumerate(value_picks[:20], 1):
+        ticker = pick.get("ticker", "")
+        name = get_ticker_name(ticker)
+        score = pick.get("composite_score", pick.get("score", 0.0))
+        pe_pct = pick.get("pe_percentile", None)
+        pb_pct = pick.get("pb_percentile", None)
+        roe = pick.get("roe", None)
+        reason = pick.get("reason", "")
+
+        pe_str = f"{pe_pct:.0f}%" if pe_pct is not None else "-"
+        pb_str = f"{pb_pct:.0f}%" if pb_pct is not None else "-"
+        roe_str = f"{roe:.1f}%" if roe is not None else "-"
+        score_str = f"{score:.3f}" if isinstance(score, float) else str(score)
+
+        rows += (
+            f"<tr>"
+            f"<td>#{i}</td>"
+            f"<td>{ticker} <small>{name}</small></td>"
+            f"<td><strong>{score_str}</strong></td>"
+            f"<td>{pe_str}</td>"
+            f"<td>{pb_str}</td>"
+            f"<td>{roe_str}</td>"
+            f"<td style='color:#555;font-size:0.88em'>{reason}</td>"
+            f"</tr>\n"
+        )
+    return f"""<div class="card">
+<p class="meta">综合分 = 便宜度（PE/PB 历史分位）+ 质量（ROE 等）加权，分位越低越便宜，ROE 越高越赚钱。</p>
+<table>
+<thead><tr><th>排名</th><th>股票</th><th>综合分</th><th>PE 历史分位</th><th>PB 历史分位</th><th>ROE</th><th>入选理由</th></tr></thead>
+<tbody>{rows}</tbody>
+</table>
+</div>"""
+
+
+def _fmt_value_picks_md(value_picks: list[dict[str, Any]] | None) -> str:
+    """Render quarterly value stock picks as Markdown table."""
+    if not value_picks:
+        return "价值选股数据尚未就绪（factor-engineer / strategy-engineer 完成后自动填充）。"
+    lines = [
+        "综合分 = 便宜度（PE/PB 历史分位）+ 质量（ROE 等）加权，分位越低越便宜，ROE 越高越赚钱。",
+        "",
+        "| 排名 | 股票 | 综合分 | PE 历史分位 | PB 历史分位 | ROE | 入选理由 |",
+        "|-----|------|--------|------------|------------|-----|---------|",
+    ]
+    for i, pick in enumerate(value_picks[:20], 1):
+        ticker = pick.get("ticker", "")
+        name = get_ticker_name(ticker)
+        score = pick.get("composite_score", pick.get("score", 0.0))
+        pe_pct = pick.get("pe_percentile", None)
+        pb_pct = pick.get("pb_percentile", None)
+        roe = pick.get("roe", None)
+        reason = pick.get("reason", "")
+
+        pe_str = f"{pe_pct:.0f}%" if pe_pct is not None else "-"
+        pb_str = f"{pb_pct:.0f}%" if pb_pct is not None else "-"
+        roe_str = f"{roe:.1f}%" if roe is not None else "-"
+        score_str = f"{score:.3f}" if isinstance(score, float) else str(score)
+
+        lines.append(f"| #{i} | {ticker} {name} | {score_str} | {pe_str} | {pb_str} | {roe_str} | {reason} |")
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Backtest performance section — strategy vs HS300
+# ---------------------------------------------------------------------------
+
+def _fmt_backtest_html(backtest: dict[str, Any] | None) -> str:
+    """Render backtest performance vs HS300 as HTML."""
+    if not backtest:
+        return (
+            "<div class='card'><p class='meta'>回测数据尚未就绪"
+            "（T4 strategy-engineer 完成后自动填充）。</p></div>"
+        )
+    strategy_return = backtest.get("strategy_total_return", None)
+    benchmark_return = backtest.get("benchmark_total_return", None)
+    excess_return = backtest.get("excess_return", None)
+    sharpe = backtest.get("sharpe_ratio", None)
+    max_dd = backtest.get("max_drawdown", None)
+    n_quarters = backtest.get("n_quarters", None)
+    period = backtest.get("period", "")
+    caveat = backtest.get("caveat", "回测不代表实盘，历史收益不预测未来。")
+
+    def _pct(v: Any) -> str:
+        if v is None:
+            return "-"
+        try:
+            return f"{float(v)*100:.1f}%"
+        except (TypeError, ValueError):
+            return str(v)
+
+    def _f2(v: Any) -> str:
+        if v is None:
+            return "-"
+        try:
+            return f"{float(v):.2f}"
+        except (TypeError, ValueError):
+            return str(v)
+
+    excess_color = "#27ae60" if (excess_return or 0) > 0 else "#c0392b"
+    rows = f"""
+<tr><td>策略累计收益</td><td><strong>{_pct(strategy_return)}</strong></td></tr>
+<tr><td>沪深300 同期</td><td>{_pct(benchmark_return)}</td></tr>
+<tr><td>超额收益</td><td style="color:{excess_color};font-weight:bold">{_pct(excess_return)}</td></tr>
+<tr><td>Sharpe 比率</td><td>{_f2(sharpe)}</td></tr>
+<tr><td>最大回撤</td><td>{_pct(max_dd)}</td></tr>
+<tr><td>回测期间</td><td>{period}</td></tr>
+<tr><td>换仓次数</td><td>{n_quarters if n_quarters is not None else "-"} 季度</td></tr>
+"""
+    return f"""<div class="card">
+<table>
+<thead><tr><th>指标</th><th>值</th></tr></thead>
+<tbody>{rows}</tbody>
+</table>
+<p class="meta" style="margin-top:8px;color:#d4380d">⚠️ {caveat}</p>
+</div>"""
+
+
+def _fmt_backtest_md(backtest: dict[str, Any] | None) -> str:
+    """Render backtest performance vs HS300 as Markdown."""
+    if not backtest:
+        return "回测数据尚未就绪（T4 strategy-engineer 完成后自动填充）。"
+
+    strategy_return = backtest.get("strategy_total_return", None)
+    benchmark_return = backtest.get("benchmark_total_return", None)
+    excess_return = backtest.get("excess_return", None)
+    sharpe = backtest.get("sharpe_ratio", None)
+    max_dd = backtest.get("max_drawdown", None)
+    n_quarters = backtest.get("n_quarters", None)
+    period = backtest.get("period", "")
+    caveat = backtest.get("caveat", "回测不代表实盘，历史收益不预测未来。")
+
+    def _pct(v: Any) -> str:
+        if v is None:
+            return "-"
+        try:
+            return f"{float(v)*100:.1f}%"
+        except (TypeError, ValueError):
+            return str(v)
+
+    def _f2(v: Any) -> str:
+        if v is None:
+            return "-"
+        try:
+            return f"{float(v):.2f}"
+        except (TypeError, ValueError):
+            return str(v)
+
+    lines = [
+        "| 指标 | 值 |",
+        "|------|-----|",
+        f"| 策略累计收益 | **{_pct(strategy_return)}** |",
+        f"| 沪深300 同期 | {_pct(benchmark_return)} |",
+        f"| 超额收益 | {_pct(excess_return)} |",
+        f"| Sharpe 比率 | {_f2(sharpe)} |",
+        f"| 最大回撤 | {_pct(max_dd)} |",
+        f"| 回测期间 | {period} |",
+        f"| 换仓次数 | {n_quarters if n_quarters is not None else '-'} 季度 |",
+        "",
+        f"> ⚠️ {caveat}",
+    ]
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
 # Accuracy section
 # ---------------------------------------------------------------------------
 
@@ -593,7 +768,11 @@ def render(results: dict[str, Any], output_dir: Path) -> tuple[Path, Path]:
             report_date, universe_size, generated_at, data_cutoff,
             total_seconds, model_version, model_paths, json_path,
             errors, direction, return_, ranking, trade_signal,
-            accuracy (optional)
+            accuracy (optional),
+            value_picks (optional): list of dicts with keys ticker, composite_score,
+                pe_percentile, pb_percentile, roe, reason
+            backtest (optional): dict with strategy_total_return, benchmark_total_return,
+                excess_return, sharpe_ratio, max_drawdown, n_quarters, period, caveat
         output_dir: directory to write reports into (created if missing)
 
     Returns:
@@ -609,6 +788,8 @@ def render(results: dict[str, Any], output_dir: Path) -> tuple[Path, Path]:
     rank_d = results.get("ranking", {})
     sig_d = results.get("trade_signal", {})
     accuracy = results.get("accuracy", None)
+    value_picks = results.get("value_picks", None)
+    backtest = results.get("backtest", None)
 
     direction_auc = dir_d.get("metrics", {}).get("auc", "N/A")
     return_r2 = ret_d.get("metrics", {}).get("r2", "N/A")
@@ -696,6 +877,8 @@ def render(results: dict[str, Any], output_dir: Path) -> tuple[Path, Path]:
     html_tpl = (_TEMPLATE_DIR / "daily_report.html.template").read_text(encoding="utf-8")
     html_subs = dict(subs)
     html_subs.update({
+        "value_picks_section": _fmt_value_picks_html(value_picks),
+        "backtest_section": _fmt_backtest_html(backtest),
         "direction_section": _fmt_direction_html(dir_d),
         "return_section": _fmt_return_html(ret_d),
         "ranking_section": _fmt_ranking_html(rank_d),
@@ -710,6 +893,8 @@ def render(results: dict[str, Any], output_dir: Path) -> tuple[Path, Path]:
     md_tpl = (_TEMPLATE_DIR / "daily_report.md.template").read_text(encoding="utf-8")
     md_subs = dict(subs)
     md_subs.update({
+        "value_picks_section": _fmt_value_picks_md(value_picks),
+        "backtest_section": _fmt_backtest_md(backtest),
         "direction_section": _fmt_direction_md(dir_d),
         "return_section": _fmt_return_md(ret_d),
         "ranking_section": _fmt_ranking_md(rank_d),

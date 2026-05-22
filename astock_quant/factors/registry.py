@@ -49,6 +49,8 @@ from astock_quant.factors.fundamental import (
     PB,
     PE,
     ROE,
+    DividendYield,
+    GrossMargin,
     NetMargin,
     NetProfitGrowthYoY,
     RevenueGrowthYoY,
@@ -89,11 +91,13 @@ def _llm_factor_enabled() -> bool:
 def default_factors() -> list[BaseFactor]:
     """Stage 1 默认启用的因子集合.
 
-    分类（共 24 个）：
+    分类（共 27 个）：
       量价（13）：动量 5/20/60 + 价格相对均线 5/20 + ZScore 50 + RSI 14 +
                   波动率 20 + ATR% 14 + 量比 20 + 成交额均 20 + MACD柱 + 布林位置 20
-      财务（7）：PE / PB / ROE / 净利率 / EPS / 营收同比 / 净利同比
-      资金流（4）：主力 5/20 日 + 超大 5 日 + 大单 5 日 + 主力净流入占比
+      财务（9）：PE / PB / 股息率 / ROE / 净利率 / 毛利率 / EPS / 营收同比 / 净利同比
+                 —— T1 重建：PE/PB 改用日线股价 + 重建财报自己算（原腾讯快照历史
+                 95% NaN）；新增股息率 + 毛利率两个价值/质量因子。
+      资金流（5）：主力 5/20 日 + 超大 5 日 + 大单 5 日 + 主力净流入占比
 
     新增因子在这里 append 一行即可 —— 下游无感。Stage 2 加 LLM 因子也是同样的位置：
         from astock_quant.factors.llm_factor import LLMSentiment
@@ -114,15 +118,17 @@ def default_factors() -> list[BaseFactor]:
         AmountMean(20),
         MACDHist(),
         BollingerPosition(20),
-        # ----- 财务（7） -----
+        # ----- 财务（9）—— T1 重建估值因子 -----
         PE(),
         PB(),
+        DividendYield(),
         ROE(),
         NetMargin(),
+        GrossMargin(),
         EPS(),
         RevenueGrowthYoY(),
         NetProfitGrowthYoY(),
-        # ----- 资金流（4） -----
+        # ----- 资金流（5） -----
         MainInflowRolling(5),
         MainInflowRolling(20),
         SuperInflowRolling(5),

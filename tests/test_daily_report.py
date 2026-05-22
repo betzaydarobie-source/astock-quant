@@ -606,3 +606,293 @@ class TestAsciiBar:
         from astock_quant.predict.renderer import make_ascii_bar
         result = make_ascii_bar([1.0, 0.5, 0.25])
         assert "0" in result and "1" in result and "2" in result
+
+
+# ---------------------------------------------------------------------------
+# _build_value_picks wiring unit tests
+# ---------------------------------------------------------------------------
+
+class TestBuildValuePicks:
+
+    def _make_scores_df(self) -> "pd.DataFrame":
+        import pandas as pd
+        idx = pd.MultiIndex.from_tuples(
+            [
+                (pd.Timestamp("2026-05-16"), "600519"),
+                (pd.Timestamp("2026-05-16"), "000858"),
+                (pd.Timestamp("2026-05-16"), "601012"),
+            ],
+            names=["date", "ticker"],
+        )
+        return pd.DataFrame(
+            {
+                "composite_score": [0.9, 0.7, 0.5],
+                "value_score":     [0.8, 0.6, 0.4],
+                "quality_score":   [0.75, 0.65, 0.3],
+                "growth_score":    [0.5, 0.4, 0.6],
+            },
+            index=idx,
+        )
+
+    def test_returns_list_of_dicts(self):
+        from astock_quant.predict.daily import _build_value_picks
+        picks = _build_value_picks(self._make_scores_df(), None, "2026-05-16")
+        assert isinstance(picks, list)
+        assert len(picks) > 0
+        assert all(isinstance(p, dict) for p in picks)
+
+    def test_sorted_by_composite_score_desc(self):
+        from astock_quant.predict.daily import _build_value_picks
+        picks = _build_value_picks(self._make_scores_df(), None, "2026-05-16")
+        scores = [p["composite_score"] for p in picks]
+        assert scores == sorted(scores, reverse=True)
+
+    def test_each_pick_has_required_keys(self):
+        from astock_quant.predict.daily import _build_value_picks
+        picks = _build_value_picks(self._make_scores_df(), None, "2026-05-16")
+        for p in picks:
+            for key in ("ticker", "composite_score", "reason"):
+                assert key in p, f"pick missing key '{key}': {p}"
+
+    def test_reason_string_nonempty(self):
+        from astock_quant.predict.daily import _build_value_picks
+        picks = _build_value_picks(self._make_scores_df(), None, "2026-05-16")
+        for p in picks:
+            assert isinstance(p["reason"], str) and p["reason"], \
+                f"reason should be non-empty string, got: {p['reason']!r}"
+
+    def test_empty_dataframe_returns_empty_list(self):
+        import pandas as pd
+        from astock_quant.predict.daily import _build_value_picks
+        empty = pd.DataFrame(
+            columns=["composite_score", "value_score", "quality_score", "growth_score"]
+        )
+        picks = _build_value_picks(empty, None, "2026-05-16")
+        assert picks == []
+
+    def test_top_n_respected(self):
+        import pandas as pd
+        from astock_quant.predict.daily import _build_value_picks
+        idx = pd.MultiIndex.from_tuples(
+            [(pd.Timestamp("2026-05-16"), f"6000{i:02d}") for i in range(30)],
+            names=["date", "ticker"],
+        )
+        df = pd.DataFrame(
+            {
+                "composite_score": [i / 30 for i in range(30)],
+                "value_score":     [0.5] * 30,
+                "quality_score":   [0.5] * 30,
+                "growth_score":    [0.5] * 30,
+            },
+            index=idx,
+        )
+        picks = _build_value_picks(df, None, "2026-05-16", top_n=5)
+        assert len(picks) <= 5
+
+    def test_future_date_slices_latest_available(self):
+        from astock_quant.predict.daily import _build_value_picks
+        # Asking for a date after the data — should still return picks from last available
+        picks = _build_value_picks(self._make_scores_df(), None, "2026-12-31")
+        assert len(picks) > 0
+
+    def test_none_scores_df_returns_empty(self):
+        from astock_quant.predict.daily import _build_value_picks
+        picks = _build_value_picks(None, None, "2026-05-16")
+        assert picks == []
+
+
+# ---------------------------------------------------------------------------
+# 价值选股推荐名单渲染
+# ---------------------------------------------------------------------------
+
+def _make_value_picks() -> list[dict]:
+    return [
+        {
+            "ticker": "600519",
+            "composite_score": 0.85,
+            "pe_percentile": 12.0,
+            "pb_percentile": 8.5,
+            "roe": 28.3,
+            "reason": "PE 历史低位，ROE 行业第一",
+        },
+        {
+            "ticker": "000858",
+            "composite_score": 0.72,
+            "pe_percentile": 25.0,
+            "pb_percentile": 18.0,
+            "roe": 22.1,
+            "reason": "估值合理，持续盈利能力强",
+        },
+    ]
+
+
+def _make_backtest() -> dict:
+    return {
+        "strategy_total_return": 0.423,
+        "benchmark_total_return": 0.187,
+        "excess_return": 0.236,
+        "sharpe_ratio": 1.24,
+        "max_drawdown": -0.158,
+        "n_quarters": 8,
+        "period": "2022-01-01 ~ 2024-01-01",
+        "caveat": "回测不代表实盘，历史收益不预测未来。",
+    }
+
+
+class TestValuePicksRenderer:
+
+    def test_value_picks_html_renders_ticker(self, tmp_path):
+        """有 value_picks 时 HTML 包含股票代码。"""
+        from astock_quant.predict.renderer import render
+        results = _make_full_results()
+        results["value_picks"] = _make_value_picks()
+        html_path, _ = render(results, tmp_path)
+        content = html_path.read_text(encoding="utf-8")
+        assert "600519" in content
+
+    def test_value_picks_md_renders_ticker(self, tmp_path):
+        """有 value_picks 时 MD 包含股票代码。"""
+        from astock_quant.predict.renderer import render
+        results = _make_full_results()
+        results["value_picks"] = _make_value_picks()
+        _, md_path = render(results, tmp_path)
+        content = md_path.read_text(encoding="utf-8")
+        assert "600519" in content
+
+    def test_value_picks_html_shows_score(self, tmp_path):
+        """HTML 里显示综合分。"""
+        from astock_quant.predict.renderer import render
+        results = _make_full_results()
+        results["value_picks"] = _make_value_picks()
+        html_path, _ = render(results, tmp_path)
+        content = html_path.read_text(encoding="utf-8")
+        assert "0.850" in content
+
+    def test_value_picks_none_shows_placeholder(self, tmp_path):
+        """value_picks=None 时报告显示占位提示，不崩溃。"""
+        from astock_quant.predict.renderer import render
+        results = _make_full_results()
+        results["value_picks"] = None
+        html_path, md_path = render(results, tmp_path)
+        html_content = html_path.read_text(encoding="utf-8")
+        md_content = md_path.read_text(encoding="utf-8")
+        assert "尚未就绪" in html_content or "尚未就绪" in md_content
+
+    def test_value_picks_missing_key_no_crash(self, tmp_path):
+        """value_picks 条目缺字段时不崩溃（容错）。"""
+        from astock_quant.predict.renderer import render
+        results = _make_full_results()
+        results["value_picks"] = [{"ticker": "600519"}]
+        html_path, md_path = render(results, tmp_path)
+        assert html_path.exists()
+        assert md_path.exists()
+
+    def test_value_picks_html_contains_reason(self, tmp_path):
+        """入选理由出现在 HTML 报告里。"""
+        from astock_quant.predict.renderer import render
+        results = _make_full_results()
+        results["value_picks"] = _make_value_picks()
+        html_path, _ = render(results, tmp_path)
+        content = html_path.read_text(encoding="utf-8")
+        assert "ROE 行业第一" in content
+
+
+class TestBacktestRenderer:
+
+    def test_backtest_html_renders_strategy_return(self, tmp_path):
+        """有 backtest 时 HTML 包含策略收益数字。"""
+        from astock_quant.predict.renderer import render
+        results = _make_full_results()
+        results["backtest"] = _make_backtest()
+        html_path, _ = render(results, tmp_path)
+        content = html_path.read_text(encoding="utf-8")
+        assert "42.3%" in content
+
+    def test_backtest_md_renders_benchmark(self, tmp_path):
+        """有 backtest 时 MD 包含沪深300 基准收益。"""
+        from astock_quant.predict.renderer import render
+        results = _make_full_results()
+        results["backtest"] = _make_backtest()
+        _, md_path = render(results, tmp_path)
+        content = md_path.read_text(encoding="utf-8")
+        assert "18.7%" in content
+
+    def test_backtest_none_shows_placeholder(self, tmp_path):
+        """backtest=None 时报告显示占位提示，不崩溃。"""
+        from astock_quant.predict.renderer import render
+        results = _make_full_results()
+        results["backtest"] = None
+        html_path, md_path = render(results, tmp_path)
+        html_content = html_path.read_text(encoding="utf-8")
+        md_content = md_path.read_text(encoding="utf-8")
+        assert "尚未就绪" in html_content or "尚未就绪" in md_content
+
+    def test_backtest_html_contains_caveat(self, tmp_path):
+        """回测免责声明出现在 HTML 里。"""
+        from astock_quant.predict.renderer import render
+        results = _make_full_results()
+        results["backtest"] = _make_backtest()
+        html_path, _ = render(results, tmp_path)
+        content = html_path.read_text(encoding="utf-8")
+        assert "回测不代表实盘" in content
+
+    def test_backtest_excess_return_in_md(self, tmp_path):
+        """超额收益出现在 MD 里。"""
+        from astock_quant.predict.renderer import render
+        results = _make_full_results()
+        results["backtest"] = _make_backtest()
+        _, md_path = render(results, tmp_path)
+        content = md_path.read_text(encoding="utf-8")
+        assert "23.6%" in content
+
+
+class TestNewReportStructure:
+
+    def test_html_has_value_section_before_experimental(self, tmp_path):
+        """HTML 中价值选股 §1 出现在实验性预测 §5 之前。"""
+        from astock_quant.predict.renderer import render
+        results = _make_full_results()
+        results["value_picks"] = _make_value_picks()
+        html_path, _ = render(results, tmp_path)
+        content = html_path.read_text(encoding="utf-8")
+        idx_value = content.find("§1")
+        idx_exp = content.find("§5")
+        assert idx_value != -1, "HTML 缺少 §1"
+        assert idx_exp != -1, "HTML 缺少 §5"
+        assert idx_value < idx_exp, "价值选股 §1 应在实验性预测 §5 之前"
+
+    def test_md_has_value_section_before_experimental(self, tmp_path):
+        """MD 中价值选股 §1 出现在实验性预测 §5 之前。"""
+        from astock_quant.predict.renderer import render
+        results = _make_full_results()
+        results["value_picks"] = _make_value_picks()
+        _, md_path = render(results, tmp_path)
+        content = md_path.read_text(encoding="utf-8")
+        idx_value = content.find("§1")
+        idx_exp = content.find("§5")
+        assert idx_value != -1, "MD 缺少 §1"
+        assert idx_exp != -1, "MD 缺少 §5"
+        assert idx_value < idx_exp, "价值选股 §1 应在实验性预测 §5 之前"
+
+    def test_experimental_section_labeled_in_html(self, tmp_path):
+        """短期预测区域有「实验性」标注。"""
+        from astock_quant.predict.renderer import render
+        results = _make_full_results()
+        html_path, _ = render(results, tmp_path)
+        content = html_path.read_text(encoding="utf-8")
+        assert "实验性" in content or "接近随机" in content
+
+    def test_disclaimer_still_present_with_new_structure(self, tmp_path):
+        """命门：诚信声明在新报告结构里仍存在（不构成投资建议）。"""
+        from astock_quant.predict.renderer import render
+        results = _make_full_results()
+        html_path, md_path = render(results, tmp_path)
+        html_content = html_path.read_text(encoding="utf-8")
+        md_content = md_path.read_text(encoding="utf-8")
+        for content, name in [(html_content, "HTML"), (md_content, "MD")]:
+            has_disclaimer = (
+                "诚信声明" in content
+                or "不构成投资" in content
+                or "AUC" in content
+            )
+            assert has_disclaimer, f"命门失败：{name} 新结构里缺少诚信声明"

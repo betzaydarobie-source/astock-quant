@@ -241,24 +241,44 @@ def load_financials(
     universe: list[str] | None = None,
     source: DataSource | None = None,
     curr_date: str | None = None,
+    force_refresh: bool = False,
 ) -> dict[str, list]:
     """拉 universe 的财务指标 —— 返回 {ticker: list[FinancialMetrics]}.
 
     财务数据按报告期发布（季度粒度），不像行情是规整的日频，做成 panel 反而别扭。
-    这里返回「每只票一串报告期记录」，由 fundamental 因子层负责按交易日 forward-fill
-    对齐（某交易日用「最近一期已发布财报」）。
+    这里返回「每只票一串报告期记录」，由 fundamental 因子层负责按交易日对齐
+    （某交易日用「最近一期已披露财报」）。
 
-    防未来函数：curr_date 给定时，astock_source.get_financials 内部已只返回
-    报告期 <= curr_date 的记录。curr_date=None 时用 SETTINGS.history_end。
+    ★ T1 重建 ★：数据源从 astock_source.get_financials（只给最新一期估值快照、
+    无缓存、PE/PB 历史 95% NaN）换成 `data/fundamentals.load_financial_history`
+    —— 后者从同花顺财报 + 东财分红重建全历史，每只票一份 CSV 缓存，回测可复现，
+    且每条记录带 `publish_date`（保守可见日）供因子层防 look-ahead 对齐。
+
+    防未来函数：
+      - 每条 FinancialMetrics 带 `publish_date`（财报实际/保守可见日）。
+      - curr_date 给定时，过滤掉 `publish_date > curr_date` 的记录 —— 即「站在
+        curr_date 这个时点还没披露」的财报一律不返回。curr_date=None 返回全历史
+        （由因子层 align_by_publish_date 逐日按 publish_date 对齐，同样安全）。
+
+    参数 source 保留仅为向后兼容签名 —— T1 起本函数不再用它（财报走 fundamentals
+    模块）。force_refresh=True 时强制重拉财报网络（季度有新财报后用）。
     """
+    from astock_quant.data import fundamentals as _fundamentals
+
     universe = universe or SETTINGS.universe
-    source = source or AStockSource()
-    end_date = curr_date or SETTINGS.history_end
 
     result: dict[str, list] = {}
     for ticker in universe:
         code = normalize_ticker(ticker)
-        result[code] = source.get_financials(code, end_date)
+        records = _fundamentals.load_financial_history(code, force_refresh=force_refresh)
+        if curr_date is not None:
+            cutoff = pd.to_datetime(curr_date)
+            records = [
+                r for r in records
+                if r.publish_date is not None
+                and pd.to_datetime(r.publish_date, format="%Y%m%d") <= cutoff
+            ]
+        result[code] = records
     return result
 
 

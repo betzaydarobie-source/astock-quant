@@ -359,6 +359,74 @@ def ranking_label(
     return ranks
 
 
+def value_ranking_label(
+    price_panel: pd.DataFrame,
+    *,
+    horizon: int | None = None,
+    for_training: bool = True,
+    close_col: str = "close",
+) -> pd.Series:
+    """③-价值 季度级横截面相对收益排名标签 —— T3 价值选股改造.
+
+    与 `ranking_label` 的关系（关键）：
+        本函数就是 `ranking_label`，**唯一区别是默认 horizon = 一个季度（~60 交易日）**
+        而不是短窗的 5 日。底层完全复用 `ranking_label` → `return_label` 的 shift +
+        groupby(date).rank 链路，**不重写任何计算逻辑**，因此：
+          - 横截面 rank 命门（必须 groupby(date)，绝不全样本 rank）自动继承
+          - 三道防 look-ahead（数据截断 / splits purge gap / align_xy dropna）自动继承
+          - return_label ↔ ranking_label 的单调不变量自动继承
+
+    为什么价值标签必须是季度尺度（诚信披露，不是拍脑袋）：
+        本项目用 8 天反复诚实证明：「未来 5 日涨跌」用散户可得的因子预测准确率 ≈ 51%，
+        接近随机。原因是 5 日尺度被噪音主导，价值因子（低 PE/PB、高 ROE、高股息）的
+        信号被淹没。价值因子的逻辑是「便宜 + 能赚钱的好公司，长期会被市场修复定价」——
+        这个修复过程以季度/年为单位发生。所以预测目标必须放到一个季度（~60 交易日，
+        A股 每年约 242 交易日 ÷ 4）才有真实的横截面区分力。
+
+    标签定义（两步，与 ranking_label 完全一致，只是 horizon 变大）：
+        step 1：每个 (date, ticker) 的未来 horizon 日累计收益率 = close[T+h]/close[T]-1
+        step 2：按 **date** groupby 做横截面 pct rank ∈ [0, 1]
+                同一日未来一季度涨得最多的票 → 1.0；最差 → 0.0；中位 → 0.5。
+
+    参数：
+        price_panel:    行情 panel，MultiIndex=(date, ticker)，含 close_col 列。
+        horizon:        预测未来 N 个交易日。**默认走 SETTINGS.label.value_horizon（60）**
+                        —— 这是本函数与 ranking_label 的唯一差异点。
+        for_training:   与 ranking_label 同款语义（当前两种模式行为一致，尾部 NaN 来自
+                        shift 的自然结果）。
+        close_col:      收盘价列名，默认 "close"。
+
+    返回：
+        pd.Series，MultiIndex=(date, ticker)，name="value_ranking_label"。
+        值域：[0.0, 1.0] ∪ {NaN}。NaN 在 (a) 数据起始处 pct_change 无法回溯
+        (b) 尾部 horizon 行未来未知 两种情况下出现。
+
+    ────────────────────────────────────────────────────────────────────────
+    horizon 从 5 变 60 → purge gap 必须同步放大（look-ahead 第二道防线）
+    ────────────────────────────────────────────────────────────────────────
+    本标签的语义是「T 日标签 = T+60 日的相对涨幅」，所以训练集 date=T 的样本，其 y
+    实际「看了」T+60 日的真实价格。切训练/验证集时，`models/splits.py` 的 purge gap
+    **必须 >= 60**，否则训练集尾部样本的 60 日未来窗口会跨切线泄漏进验证集。
+
+    配套配置：`SETTINGS.split.value_purge_gap`（默认 60）就是为此准备的。调用
+    `time_series_split` 时务必传 `purge_gap_days=SETTINGS.split.value_purge_gap`
+    且 `label_horizon=SETTINGS.label.value_horizon`，让命门校验 `gap >= horizon` 生效。
+    短窗任务用的 `SETTINGS.split.purge_gap`（10）对价值标签是不够的，绝不能混用。
+    """
+    horizon = horizon or SETTINGS.label.value_horizon
+
+    # 完全委托给 ranking_label —— 不重写任何计算，确保横截面 rank 命门 + 三道防线一致。
+    # 唯一动作：把默认 horizon 换成季度尺度，再把输出 Series 改名以便下游区分。
+    ranks = ranking_label(
+        price_panel,
+        horizon=horizon,
+        for_training=for_training,
+        close_col=close_col,
+    )
+    ranks.name = "value_ranking_label"
+    return ranks
+
+
 def trade_signal_label(
     price_panel: pd.DataFrame,
     *,
@@ -486,5 +554,6 @@ __all__ = [
     "align_xy",
     "return_label",
     "ranking_label",
+    "value_ranking_label",
     "trade_signal_label",
 ]

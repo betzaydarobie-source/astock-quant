@@ -98,6 +98,127 @@ def _serialize_prediction(p: Any) -> dict[str, Any]:
     }
 
 
+def _build_value_picks(
+    scores_df: "Any",
+    factor_frame: "Any | None",
+    date_str: str,
+    top_n: int = 20,
+) -> list[dict[str, Any]]:
+    """Convert compute_value_scores() output → renderer value_picks list.
+
+    Args:
+        scores_df:    DataFrame with MultiIndex=(date, ticker), columns include
+                      composite_score, value_score, quality_score, growth_score.
+        factor_frame: Optional FactorFrame or DataFrame with raw factor values
+                      (pe, pb, roe) for display; None means those columns show '-'.
+        date_str:     The report date (YYYY-MM-DD) to slice the latest scores.
+        top_n:        Maximum picks to include (default 20).
+
+    Returns:
+        list of dicts, each with keys: ticker, composite_score, value_score,
+        quality_score, growth_score, pe, pb, roe, reason.
+    """
+    try:
+        import pandas as _pd
+        from astock_quant.factors.value_score import (
+            COL_COMPOSITE, COL_VALUE, COL_QUALITY, COL_GROWTH,
+        )
+    except Exception:  # noqa: BLE001
+        return []
+
+    if scores_df is None or scores_df.empty:
+        return []
+
+    # Slice to the most recent date at or before report date
+    try:
+        target_date = _pd.Timestamp(date_str)
+        if isinstance(scores_df.index, _pd.MultiIndex):
+            dates = scores_df.index.get_level_values(0)
+            available = dates[dates <= target_date]
+            if available.empty:
+                return []
+            latest = available.max()
+            day_df = scores_df.xs(latest, level=0)
+        else:
+            day_df = scores_df
+    except Exception:  # noqa: BLE001
+        day_df = scores_df
+
+    if day_df.empty or COL_COMPOSITE not in day_df.columns:
+        return []
+
+    top = day_df.nlargest(top_n, COL_COMPOSITE)
+
+    # Optionally join raw factor values for display
+    raw: "Any | None" = None
+    if factor_frame is not None:
+        try:
+            ff = factor_frame
+            if hasattr(ff, "data"):
+                ff = ff.data
+            if isinstance(ff.index, _pd.MultiIndex):
+                dates_ff = ff.index.get_level_values(0)
+                avail_ff = dates_ff[dates_ff <= target_date]
+                if not avail_ff.empty:
+                    raw = ff.xs(avail_ff.max(), level=0)
+            else:
+                raw = ff
+        except Exception:  # noqa: BLE001
+            raw = None
+
+    picks = []
+    for ticker, row in top.iterrows():
+        composite = float(row.get(COL_COMPOSITE, 0.0))
+        val_s = float(row.get(COL_VALUE, 0.0))
+        qual_s = float(row.get(COL_QUALITY, 0.0))
+        growth_s = float(row.get(COL_GROWTH, 0.0))
+
+        pe = pb = roe = None
+        if raw is not None and ticker in raw.index:
+            raw_row = raw.loc[ticker]
+            pe = raw_row.get("pe") if hasattr(raw_row, "get") else None
+            pb = raw_row.get("pb") if hasattr(raw_row, "get") else None
+            roe = raw_row.get("roe") if hasattr(raw_row, "get") else None
+            try:
+                pe = float(pe) if pe is not None else None
+                pb = float(pb) if pb is not None else None
+                roe = float(roe) if roe is not None else None
+            except (TypeError, ValueError):
+                pe = pb = roe = None
+
+        # Auto-generate entry reason from sub-scores.
+        # Scores are cross-sectional ranks (0=bottom, 1=top) within today's universe,
+        # NOT absolute valuation levels — use relative wording only.
+        parts = []
+        if val_s >= 0.7:
+            parts.append("当前池子里估值相对便宜")
+        elif val_s >= 0.5:
+            parts.append("估值相对偏低")
+        if qual_s >= 0.7:
+            parts.append("盈利质量相对较强")
+        elif qual_s >= 0.5:
+            parts.append("盈利质量尚可")
+        if growth_s >= 0.7:
+            parts.append("成长性相对较好")
+        if roe is not None and roe >= 15:
+            parts.append(f"ROE {roe:.1f}%")
+        reason = "、".join(parts) if parts else "综合分在当前池子里领先"
+
+        picks.append({
+            "ticker": str(ticker),
+            "composite_score": composite,
+            "value_score": val_s,
+            "quality_score": qual_s,
+            "growth_score": growth_s,
+            "pe": pe,
+            "pb": pb,
+            "roe": roe,
+            "reason": reason,
+        })
+
+    return picks
+
+
 def _strip_non_json(result: dict[str, Any]) -> dict[str, Any]:
     """从 pipeline 返回的 dict 里挑 JSON-friendly 字段；丢掉 model / DataFrame 等."""
     out: dict[str, Any] = {}
@@ -116,6 +237,135 @@ def _strip_non_json(result: dict[str, Any]) -> dict[str, Any]:
     if "factor_names" in result:
         out["factor_names"] = list(result["factor_names"])
     return out
+
+
+# ---------------------------------------------------------------------------
+# Value picks wiring — graceful fallback if T2 module not yet available
+# ---------------------------------------------------------------------------
+
+
+def _try_build_value_picks(
+    universe: list[str],
+    date_str: str,
+    prepared_data: dict | None,
+) -> list[dict[str, Any]] | None:
+    """Try to build value picks from compute_value_scores; return None on any failure.
+
+    This function is intentionally defensive — T2 (value_score) may not be
+    installed yet, or the factor data may be incomplete. None causes the
+    report to show a placeholder instead of crashing.
+    """
+    try:
+        from astock_quant.factors.value_score import compute_value_scores
+        from astock_quant.data.dataset import prepare_stage1_data
+
+        factor_data = prepared_data
+        if factor_data is None:
+            factor_data = prepare_stage1_data(universe=universe)
+
+        prices = factor_data.get("prices") if factor_data else None
+        financials = factor_data.get("financials") if factor_data else None
+        if prices is None:
+            return None
+
+        # Build a minimal factor DataFrame with pe, pb, roe if available
+        import pandas as _pd
+        rows = []
+        for ticker in universe:
+            price_df = prices.get(ticker) if isinstance(prices, dict) else None
+            fin = financials.get(ticker, {}) if isinstance(financials, dict) else {}
+            if price_df is None or (hasattr(price_df, "empty") and price_df.empty):
+                continue
+            # Use the last available row for this ticker
+            last = price_df.iloc[-1] if hasattr(price_df, "iloc") else {}
+            row = {
+                "pe": last.get("pe") if hasattr(last, "get") else None,
+                "pb": last.get("pb") if hasattr(last, "get") else None,
+                "roe": fin.get("roe") if fin else None,
+                "dividend_yield": last.get("dividend_yield") if hasattr(last, "get") else None,
+                "net_margin": fin.get("net_margin") if fin else None,
+                "gross_margin": fin.get("gross_margin") if fin else None,
+                "revenue_growth_yoy": fin.get("revenue_growth_yoy") if fin else None,
+                "net_profit_growth_yoy": fin.get("net_profit_growth_yoy") if fin else None,
+            }
+            date_idx = last.name if hasattr(last, "name") else _pd.Timestamp(date_str)
+            rows.append((_pd.Timestamp(date_idx), ticker, row))
+
+        if not rows:
+            return None
+
+        idx = _pd.MultiIndex.from_tuples([(r[0], r[1]) for r in rows], names=["date", "ticker"])
+        factor_df = _pd.DataFrame([r[2] for r in rows], index=idx)
+        factor_df = factor_df.apply(_pd.to_numeric, errors="coerce")
+
+        scores_df = compute_value_scores(factor_df)
+        if scores_df is None or (hasattr(scores_df, "empty") and scores_df.empty):
+            return None
+
+        return _build_value_picks(scores_df, factor_df, date_str, top_n=20)
+
+    except Exception as e:  # noqa: BLE001
+        logger.info("value_picks 构建跳过（T2 尚未就绪或数据不足）：%s", e)
+        return None
+
+
+# ---------------------------------------------------------------------------
+# Backtest artifact loader — maps T4 JSON fields to renderer schema
+# ---------------------------------------------------------------------------
+
+
+def _load_backtest_for_report(date_str: str, output_dir: Path) -> dict[str, Any] | None:
+    """Load the latest quarterly backtest artifact and map to renderer schema.
+
+    Looks for artifacts/quarterly_backtest/results_{date}.json under output_dir's
+    parent tree.  Returns None if file not found or parse fails (graceful degradation).
+    """
+    try:
+        import json as _json
+
+        # Walk up from output_dir to find artifacts/quarterly_backtest/
+        search_roots = [output_dir, output_dir.parent, output_dir.parent.parent]
+        artifact_path: Path | None = None
+        for root in search_roots:
+            candidate = root / "artifacts" / "quarterly_backtest" / f"results_{date_str}.json"
+            if candidate.exists():
+                artifact_path = candidate
+                break
+            # Also accept the most recent results_*.json in the directory
+            bt_dir = root / "artifacts" / "quarterly_backtest"
+            if bt_dir.is_dir():
+                matches = sorted(bt_dir.glob("results_*.json"), reverse=True)
+                if matches:
+                    artifact_path = matches[0]
+                    break
+
+        if artifact_path is None:
+            return None
+
+        data = _json.loads(artifact_path.read_text(encoding="utf-8"))
+        m = data.get("metrics", {})
+        cfg = data.get("config", {})
+        disclaimers = data.get("disclaimers", [])
+
+        start = m.get("start_date", "")
+        end = m.get("end_date", "")
+        period = f"{start[:7]} ~ {end[:7]}" if start and end else ""
+
+        caveat = disclaimers[0] if disclaimers else "回测不代表实盘，历史收益不预测未来。"
+
+        return {
+            "strategy_total_return": m.get("total_return"),
+            "benchmark_total_return": m.get("benchmark_total_return"),
+            "excess_return": m.get("excess_return_annualized"),
+            "sharpe_ratio": m.get("sharpe"),
+            "max_drawdown": m.get("max_drawdown"),
+            "n_quarters": cfg.get("n_rebalances"),
+            "period": period,
+            "caveat": caveat,
+        }
+    except Exception as e:  # noqa: BLE001
+        logger.info("回测 artifact 加载跳过：%s", e)
+        return None
 
 
 # ---------------------------------------------------------------------------
@@ -207,6 +457,12 @@ def run_daily_predict(
         "ranking": target_results.get("ranking", {}),
         "trade_signal": target_results.get("trade_signal", {}),
         "accuracy": None,  # P14 待实装
+        # 价值选股：尝试从 compute_value_scores 拉取；失败时降级 None（报告显示占位提示）
+        "value_picks": _try_build_value_picks(
+            universe=universe, date_str=date_str, prepared_data=prepared_data
+        ),
+        # 回测结果：从 T4 artifact 读取；None 时报告显示占位提示
+        "backtest": _load_backtest_for_report(date_str, output_dir),
     }
 
     # JSON 落盘（含完整 metrics + predictions，供 P14 准确率追踪）

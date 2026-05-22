@@ -402,29 +402,33 @@ def test_lookback_window_crosses_weekend(tmp_path):
 # ===========================================================================
 
 def test_registry_disabled_by_default(monkeypatch):
-    """默认 default_factors() 不含 LLM 因子（共 25 个）."""
+    """默认 default_factors() 不含 LLM 因子（共 27 个）.
+
+    T1 价值选股改造把财务因子从 7 扩到 9（PE/PB 重建 + 新增股息率、毛利率），
+    default_factors() 总数 25 → 27。
+    """
     monkeypatch.delenv("ENABLE_LLM_FACTOR", raising=False)
     import astock_quant.factors.registry as r
     importlib.reload(r)
     facs = r.default_factors()
-    assert len(facs) == 25
+    assert len(facs) == 27
     names = [f.name for f in facs]
     assert "news_sentiment" not in names
 
 
 def test_registry_enabled_with_env_var(monkeypatch):
-    """ENABLE_LLM_FACTOR=1 时 default_factors() 末尾追加 LLMNewsSentiment."""
+    """ENABLE_LLM_FACTOR=1 时 default_factors() 末尾追加 LLMNewsSentiment（27 + 1 = 28）."""
     monkeypatch.setenv("ENABLE_LLM_FACTOR", "1")
     import astock_quant.factors.registry as r
     importlib.reload(r)
     facs = r.default_factors()
-    assert len(facs) == 26
+    assert len(facs) == 28
     assert facs[-1].name == "news_sentiment"
     assert isinstance(facs[-1], LLMNewsSentiment)
     # 恢复关闭
     monkeypatch.setenv("ENABLE_LLM_FACTOR", "0")
     importlib.reload(r)
-    assert len(r.default_factors()) == 25
+    assert len(r.default_factors()) == 27
 
 
 # ===========================================================================

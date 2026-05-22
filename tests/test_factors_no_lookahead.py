@@ -157,15 +157,18 @@ def test_all_factors_bit_exact_at_truncation(factor_frames):
 
 
 # ---------------------------------------------------------------------------
-# 守护：default_factors 因子数 = 25（任何 PR 改这条会触发显式 review）
+# 守护：default_factors 因子数 = 27（任何 PR 改这条会触发显式 review）
 # ---------------------------------------------------------------------------
 
-def test_default_factor_count_is_25():
-    """default_factors 数量稳定在 25 —— 改动需有意识地更新 P3 报告."""
+def test_default_factor_count_is_27():
+    """default_factors 数量稳定在 27 —— 改动需有意识地更新 P3 报告.
+
+    T1（价值选股改造）把财务因子从 7 扩到 9：估值 PE/PB 重建 + 新增股息率、毛利率。
+    """
     factors = default_factors()
     names = [f.name for f in factors]
-    assert len(names) == 25, (
-        f"default_factors 数量从 25 变成 {len(names)}，"
+    assert len(names) == 27, (
+        f"default_factors 数量从 27 变成 {len(names)}，"
         f"请同步更新 P3-因子库.md。当前清单：{names}"
     )
     assert len(set(names)) == len(names), "因子 name 重复"

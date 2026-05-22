@@ -214,6 +214,70 @@ def test_default_settings_satisfy_constraint():
 
 
 # ---------------------------------------------------------------------------
+# 命门：价值标签（季度 horizon）的 purge gap 不变量（T3 价值改造）
+# ---------------------------------------------------------------------------
+
+def test_value_purge_gap_satisfies_value_horizon():
+    """命门：SETTINGS 的 value_purge_gap 必须 >= label.value_horizon —— 永久不变量.
+
+    value_ranking_label 的 horizon 是 60（一个季度），标签语义是「T 日标签 = T+60 日的
+    相对涨幅」。切训练/验证集时若 purge gap < 60，训练集尾部样本的 60 日未来窗口会跨
+    切线泄漏进验证集（look-ahead）。short-window 任务用的 purge_gap=10 对价值标签远远不够。
+
+    本断言守住：value_purge_gap 这条配置一旦被误改到 < value_horizon，CI 立刻红。
+    """
+    from astock_quant.config.settings import SETTINGS
+    assert SETTINGS.split.value_purge_gap >= SETTINGS.label.value_horizon, (
+        f"SETTINGS 配错了：value_purge_gap={SETTINGS.split.value_purge_gap} < "
+        f"label.value_horizon={SETTINGS.label.value_horizon} —— 季度价值标签会从训练集"
+        f"泄漏到验证集（look-ahead bias）。"
+    )
+
+
+def test_value_horizon_split_with_short_gap_raises(panel_index_large):
+    """命门：价值标签 horizon=60 时，若误用短窗 purge_gap（如 10）→ 必须 raise.
+
+    这是「horizon 从 5 变 60，gap 没跟着变大」的典型 look-ahead 陷阱。
+    time_series_split 的 gap >= horizon 校验必须在季度尺度同样生效。
+    """
+    with pytest.raises(ValueError, match="purge_gap_days=10 小于 label_horizon=60"):
+        time_series_split(
+            panel_index_large,
+            train_end="2024-05-31",
+            valid_end="2024-10-01",
+            purge_gap_days=10,  # 短窗 gap —— 对季度标签远远不够
+            label_horizon=60,   # 价值标签 horizon
+            group_by="date",
+        )
+
+
+def test_value_horizon_split_with_value_gap_ok(panel_index_large):
+    """价值标签 horizon=60 配 value_purge_gap=60 → 切分成功，gap 恰好满足约束.
+
+    用 SETTINGS 的真实 value 配置跑一遍 group_by='date' 切分，确认：
+      - gap >= horizon 命门放行（60 >= 60 边界成立）
+      - 切分结果非空且同 date 不跨集
+    """
+    from astock_quant.config.settings import SETTINGS
+
+    sp = time_series_split(
+        panel_index_large,
+        train_end="2024-05-31",
+        valid_end="2025-03-01",  # 拉长 valid_end，给 60 日 gap 留足空间
+        purge_gap_days=SETTINGS.split.value_purge_gap,
+        label_horizon=SETTINGS.label.value_horizon,
+        group_by="date",
+    )
+    assert sp.train_size > 0 and sp.valid_size > 0
+    assert sp.gap_days >= sp.label_horizon
+
+    # 同 date 不跨集（group_by='date' 内部已校验，这里再断言一次）
+    train_dates = set(panel_index_large[sp.train_mask].get_level_values("date").unique())
+    valid_dates = set(panel_index_large[sp.valid_mask].get_level_values("date").unique())
+    assert len(train_dates & valid_dates) == 0
+
+
+# ---------------------------------------------------------------------------
 # 命门：group_by="date" —— 横截面 ranking 场景 look-ahead 防线（Stage 3 §5.4）
 # ---------------------------------------------------------------------------
 
