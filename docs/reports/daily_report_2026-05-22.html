@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A股每日预测报告 — 2026-05-22</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+         background: #f5f5f5; color: #333; line-height: 1.6; }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 1.8em; margin-bottom: 8px; }
+  h2 { font-size: 1.3em; border-bottom: 2px solid #ddd; padding-bottom: 6px;
+       margin: 24px 0 12px; }
+  h3 { font-size: 1.05em; margin: 16px 0 8px; color: #555; }
+  .card { background: #fff; border-radius: 8px; padding: 16px 20px;
+          box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 16px; }
+
+  /* 今日一句话总结 */
+  .today-summary {
+    background: #fff7e6;
+    border-left: 4px solid #fa8c16;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 0 0 24px 0;
+  }
+  .today-summary h2 { border-color: #fa8c16; color: #ad6800; margin: 0 0 10px 0; }
+  .today-summary .summary-line { margin: 4px 0; font-size: 16px; }
+  .today-summary .honesty { color: #d4380d; font-weight: bold; }
+
+  /* 诚信声明 */
+  .disclaimer {
+    background: #fff3cd; border: 2px solid #e6a817;
+    border-radius: 8px; padding: 16px 20px; margin-bottom: 20px;
+  }
+  .disclaimer h2 { border-color: #e6a817; color: #856404; }
+  .disclaimer ul { margin-left: 20px; color: #856404; }
+  .disclaimer .metrics { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 8px; }
+  .disclaimer .metric-val { font-size: 1.4em; font-weight: bold; color: #c0392b; }
+  .disclaimer .metric-lbl { font-size: 0.8em; color: #666; }
+  .disclaimer .metric-translation { font-size: 0.85em; color: #7f5800; margin-top: 2px; }
+
+  /* 今日总览 4 格 */
+  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+                  margin-bottom: 16px; }
+  @media(max-width:640px){ .summary-grid { grid-template-columns: repeat(2,1fr); } }
+  .summary-card { background: #fff; border-radius: 8px; padding: 14px;
+                  box-shadow: 0 1px 4px rgba(0,0,0,.08); text-align: center; }
+  .summary-card .big { font-size: 2em; font-weight: bold; color: #2c7be5; }
+  .summary-card .lbl { font-size: 0.8em; color: #888; margin-top: 4px; }
+  .summary-card.ok .big { color: #27ae60; }
+  .summary-card.warn .big { color: #e67e22; }
+  .summary-card.err .big { color: #c0392b; }
+
+  /* 信号分布彩色横条 */
+  .signal-distribution { margin: 8px 0; }
+  .signal-bar { display: block; padding: 6px 12px; margin: 4px 0;
+                min-width: 80px; color: white; font-weight: bold;
+                border-radius: 4px; font-size: 0.9em; }
+  .signal-bar.buy  { background: #52c41a; }
+  .signal-bar.sell { background: #f5222d; }
+  .signal-bar.hold { background: #bfbfbf; color: #333; }
+
+  /* 信号表格 */
+  table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+  th { background: #f0f4ff; padding: 7px 10px; text-align: left;
+       border-bottom: 2px solid #c5d3e8; }
+  td { padding: 6px 10px; border-bottom: 1px solid #eee; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f9f9f9; }
+  td small { color: #888; font-size: 0.85em; margin-left: 4px; }
+  .tag-buy  { display:inline-block; background:#d4edda; color:#155724;
+              border-radius:4px; padding:2px 8px; font-size:.8em; }
+  .tag-sell { display:inline-block; background:#f8d7da; color:#721c24;
+              border-radius:4px; padding:2px 8px; font-size:.8em; }
+  .tag-hold { display:inline-block; background:#e2e3e5; color:#383d41;
+              border-radius:4px; padding:2px 8px; font-size:.8em; }
+  .tag-tp   { display:inline-block; background:#d4edda; color:#155724;
+              border-radius:4px; padding:2px 8px; font-size:.8em; }
+  .tag-sl   { display:inline-block; background:#f8d7da; color:#721c24;
+              border-radius:4px; padding:2px 8px; font-size:.8em; }
+
+  /* ASCII 条图（备用） */
+  .ascii-bar { font-family: monospace; font-size: 0.85em;
+               background: #f8f9fa; padding: 10px 14px; border-radius: 6px;
+               white-space: pre; overflow-x: auto; }
+
+  /* 📖 大白话段 */
+  .plain-language {
+    background: #f6ffed;
+    border-left: 3px solid #52c41a;
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin: 16px 0 24px 0;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .plain-language .emoji { font-size: 18px; margin-right: 6px; }
+
+  /* 状态标记 */
+  .status-ok   { color: #27ae60; font-weight: bold; }
+  .status-warn { color: #e67e22; font-weight: bold; }
+  .status-err  { color: #c0392b; font-weight: bold; }
+
+  /* 元数据 */
+  .meta { font-size: 0.8em; color: #888; margin-top: 8px; }
+  .footer { text-align: center; font-size: 0.75em; color: #aaa;
+            margin-top: 32px; padding-top: 16px; border-top: 1px solid #eee; }
+  .section-label { font-size: 0.75em; text-transform: uppercase; letter-spacing: 1px;
+                   color: #aaa; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>📅 A股每日预测报告</h1>
+  <p class="meta">预测日期：2026-05-22 &nbsp;|&nbsp; 股票池：300 只 &nbsp;|&nbsp; 生成时间：2026-05-22T11:08:32</p>
+
+  <!-- ===== 今日一句话总结（最显眼位置，第一眼看到）===== -->
+  <div class="today-summary">
+    <h2>🎯 今日一句话总结</h2>
+    <p class="summary-line">⚠️ [模型严重退化警告] 所有票预测分接近相同（score std=0.0018 < 0.02），模型输出无效。请检查数据源是否完整（财务/资金流因子可能 100% NaN）。以下预测结果不可信。</p>
+    <p class="summary-line">🥇 如果非要选 1 只：寒武纪（688256），但模型自己说 0.51 的把握。</p>
+    <p class="summary-line honesty">⚠️ 诚信结论：模型今天对所有票都看跌，但置信度非常低（< 0.3）—— 极可能是大盘整体震荡的体现，不要跟单。</p>
+  </div>
+
+  <!-- ===== 诚信声明（红线，永远不可省略）===== -->
+  <div class="disclaimer">
+    <h2>⚠️ 诚信声明 —— 请在查看预测前仔细阅读</h2>
+    <div class="metrics">
+      <div>
+        <div class="metric-val">AUC = 0.4898</div>
+        <div class="metric-lbl">涨跌方向（随机猜 AUC=0.5）</div>
+        <div class="metric-translation">📖 比抛硬币还差，模型在帮倒忙</div>
+      </div>
+      <div>
+        <div class="metric-val">R² = -0.0048</div>
+        <div class="metric-lbl">收益率预测（猜均值 R²=0）</div>
+        <div class="metric-translation">📖 比「直接猜均值」还差一点点</div>
+      </div>
+      <div>
+        <div class="metric-val">rank-IC ≈ -0.0090</div>
+        <div class="metric-lbl">横截面排名（有效 IC &gt; 0.05）</div>
+        <div class="metric-translation">📖 给 30 只票排名跟抓阄差不多</div>
+      </div>
+      <div>
+        <div class="metric-val">macro-F1 = 0.4127</div>
+        <div class="metric-lbl">买卖信号（基线 F1≈0.33）</div>
+        <div class="metric-translation">📖 略好于三选一瞎猜</div>
+      </div>
+    </div>
+    <ul style="margin-top:12px;">
+      <li>以上模型验证集指标均接近随机基线，<strong>不具备 alpha</strong></li>
+      <li>本报告所有信号<strong>不构成任何投资建议</strong>，仅供量化学习研究使用</li>
+      <li>过去的回测表现不代表未来实盘收益</li>
+      <li>A股 T+1 规则：今日买入明日才能卖出</li>
+    </ul>
+  </div>
+
+  <!-- ===== §1 今日总览 ===== -->
+  <h2>§1 今日总览</h2>
+  <div class="summary-grid">
+    <div class="summary-card ok">
+      <div class="big">✅</div>
+      <div class="lbl">① 涨跌方向</div>
+    </div>
+    <div class="summary-card ok">
+      <div class="big">✅</div>
+      <div class="lbl">② 预期收益</div>
+    </div>
+    <div class="summary-card ok">
+      <div class="big">✅</div>
+      <div class="lbl">③ 横截面排名</div>
+    </div>
+    <div class="summary-card ok">
+      <div class="big">✅</div>
+      <div class="lbl">④ 买卖信号</div>
+    </div>
+  </div>
+  <div class="card">
+    <p>本次覆盖 <strong>300 只</strong>股票，使用 <strong>2026-05-22</strong> 模型。</p>
+    <p class="meta">数据截至：2026-05-22 &nbsp;|&nbsp; 模型文件：direction=artifacts/models/direction_2026-05-19.lgb; return_=artifacts/models/return_2026-05-19.lgb; ranking=artifacts/models/ranking_2026-05-19.lgb; trade_signal=artifacts/models/trade_signal_2026-05-19.lgb</p>
+  </div>
+
+  <!-- ===== §2 ① 涨跌方向 ===== -->
+  <h2>§2 ① 涨跌方向（DirectionModel）</h2>
+  <div class="card">
+<div class="signal-distribution"><div class="signal-bar buy" style="width:0%;min-width:60px"><span>↑ 看涨 0 只</span></div><div class="signal-bar sell" style="width:100%;min-width:60px"><span>↓ 看跌 300 只</span></div><div class="signal-bar hold" style="width:0%;min-width:60px"><span>→ 中性 0 只</span></div></div>
+<p class="meta" style="margin-top:8px">覆盖 300 只 | 看涨 0 | 看跌 300</p>
+</div>
+<div class="card">
+<table>
+<thead><tr><th>股票</th><th>方向</th><th>置信度</th></tr></thead>
+<tbody><tr><td>000001 <small>平安银行</small></td><td><span class='tag-sell'>跌</span></td><td>0.467</td></tr>
+<tr><td>000002 <small>万  科Ａ</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
+<tr><td>000063 <small>中兴通讯</small></td><td><span class='tag-sell'>跌</span></td><td>0.466</td></tr>
+<tr><td>000100 <small>TCL科技</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
+<tr><td>000157 <small>中联重科</small></td><td><span class='tag-sell'>跌</span></td><td>0.470</td></tr>
+<tr><td>000166 <small>申万宏源</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
+<tr><td>000301 <small>东方盛虹</small></td><td><span class='tag-sell'>跌</span></td><td>0.467</td></tr>
+<tr><td>000333 <small>美的集团</small></td><td><span class='tag-sell'>跌</span></td><td>0.475</td></tr>
+<tr><td>000338 <small>潍柴动力</small></td><td><span class='tag-sell'>跌</span></td><td>0.465</td></tr>
+<tr><td>000408 <small>藏格矿业</small></td><td><span class='tag-sell'>跌</span></td><td>0.466</td></tr>
+<tr><td>000425 <small>徐工机械</small></td><td><span class='tag-sell'>跌</span></td><td>0.466</td></tr>
+<tr><td>000538 <small>云南白药</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
+<tr><td>000568 <small>泸州老窖</small></td><td><span class='tag-sell'>跌</span></td><td>0.470</td></tr>
+<tr><td>000596 <small>古井贡酒</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
+<tr><td>000617 <small>中油资本</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
+<tr><td>000625 <small>长安汽车</small></td><td><span class='tag-sell'>跌</span></td><td>0.470</td></tr>
+<tr><td>000630 <small>铜陵有色</small></td><td><span class='tag-sell'>跌</span></td><td>0.466</td></tr>
+<tr><td>000651 <small>格力电器</small></td><td><span class='tag-sell'>跌</span></td><td>0.466</td></tr>
+<tr><td>000661 <small>长春高新</small></td><td><span class='tag-sell'>跌</span></td><td>0.468</td></tr>
+<tr><td>000708 <small>中信特钢</small></td><td><span class='tag-sell'>跌</span></td><td>0.470</td></tr>
+<tr><td colspan='3' style='color:#aaa'>… 共 300 只，仅显示前 20</td></tr>
+</tbody>
+</table>
+</div>
+<div class="plain-language"><span class="emoji">📖</span><span class="text">📖 模型今天对 300 只全部看跌，但预测分（avg 0.47）都低于但接近 0.5，说明**模型自己也没把握**。**不要跟单卖出**——很可能是大盘当天整体震荡的副作用。</span></div>
+
+  <!-- ===== §3 ② 预期收益 ===== -->
+  <h2>§3 ② 预期收益率（ReturnRegressor）</h2>
+  <div class="card">
+<table>
+<thead><tr><th>股票</th><th>预期收益率</th></tr></thead>
+<tbody><tr><td>688256 <small>寒武纪</small></td><td><span class='tag-buy'>+0.31%</span></td></tr>
+<tr><td>300347 <small>泰格医药</small></td><td><span class='tag-buy'>+0.24%</span></td></tr>
+<tr><td>600547 <small>山东黄金</small></td><td><span class='tag-buy'>+0.24%</span></td></tr>
+<tr><td>688008 <small>澜起科技</small></td><td><span class='tag-buy'>+0.22%</span></td></tr>
+<tr><td>300433 <small>蓝思科技</small></td><td><span class='tag-buy'>+0.17%</span></td></tr>
+<tr><td>688126 <small>沪硅产业</small></td><td><span class='tag-buy'>+0.17%</span></td></tr>
+<tr><td>688187 <small>时代电气</small></td><td><span class='tag-buy'>+0.17%</span></td></tr>
+<tr><td>300274 <small>阳光电源</small></td><td><span class='tag-buy'>+0.15%</span></td></tr>
+<tr><td>603392 <small>万泰生物</small></td><td><span class='tag-buy'>+0.13%</span></td></tr>
+<tr><td>002384 <small>东山精密</small></td><td><span class='tag-buy'>+0.11%</span></td></tr>
+<tr><td>002475 <small>立讯精密</small></td><td><span class='tag-buy'>+0.11%</span></td></tr>
+<tr><td>002709 <small>天赐材料</small></td><td><span class='tag-buy'>+0.11%</span></td></tr>
+<tr><td>600482 <small>中国动力</small></td><td><span class='tag-buy'>+0.11%</span></td></tr>
+<tr><td>600522 <small>中天科技</small></td><td><span class='tag-buy'>+0.11%</span></td></tr>
+<tr><td>000708 <small>中信特钢</small></td><td><span class='tag-buy'>+0.10%</span></td></tr>
+<tr><td>000876 <small>新 希 望</small></td><td><span class='tag-buy'>+0.10%</span></td></tr>
+<tr><td>001391 <small>国货航</small></td><td><span class='tag-buy'>+0.10%</span></td></tr>
+<tr><td>001965 <small>招商公路</small></td><td><span class='tag-buy'>+0.10%</span></td></tr>
+<tr><td>002252 <small>上海莱士</small></td><td><span class='tag-buy'>+0.10%</span></td></tr>
+<tr><td>002304 <small>洋河股份</small></td><td><span class='tag-buy'>+0.10%</span></td></tr>
+<tr><td colspan='2' style='color:#aaa'>… 共 300 只，仅显示前 20</td></tr>
+</tbody>
+</table>
+</div>
+<div class="plain-language"><span class="emoji">📖</span><span class="text">📖 模型预测所有票涨跌幅都在 ±0.5% 之内，绝对值接近 0 —— 等于**偷懒猜均值**。这就是 R²=-0.0048 的体现：模型没本事预测幅度。</span></div>
+
+  <!-- ===== §4 ③ 横截面排名 ===== -->
+  <h2>§4 ③ 横截面排名 Top N（RankingModel）</h2>
+  <div class="card">
+<table>
+<thead><tr><th>排名</th><th>股票</th><th>ranking score</th></tr></thead>
+<tbody><tr><td>#1</td><td>688256 <small>寒武纪</small></td><td>0.5077</td></tr>
+<tr><td>#2</td><td>000333 <small>美的集团</small></td><td>0.5072</td></tr>
+<tr><td>#3</td><td>000792 <small>盐湖股份</small></td><td>0.5062</td></tr>
+<tr><td>#4</td><td>002001 <small>新 和 成</small></td><td>0.5062</td></tr>
+<tr><td>#5</td><td>300347 <small>泰格医药</small></td><td>0.5052</td></tr>
+<tr><td>#6</td><td>600018 <small>上港集团</small></td><td>0.5041</td></tr>
+<tr><td>#7</td><td>600377 <small>宁沪高速</small></td><td>0.5041</td></tr>
+<tr><td>#8</td><td>600600 <small>青岛啤酒</small></td><td>0.5041</td></tr>
+<tr><td>#9</td><td>600886 <small>国投电力</small></td><td>0.5041</td></tr>
+<tr><td>#10</td><td>600900 <small>长江电力</small></td><td>0.5041</td></tr>
+<tr><td>#11</td><td>600905 <small>三峡能源</small></td><td>0.5041</td></tr>
+<tr><td>#12</td><td>600919 <small>江苏银行</small></td><td>0.5041</td></tr>
+<tr><td>#13</td><td>600941 <small>中国移动</small></td><td>0.5041</td></tr>
+<tr><td>#14</td><td>600999 <small>招商证券</small></td><td>0.5041</td></tr>
+<tr><td>#15</td><td>601229 <small>上海银行</small></td><td>0.5041</td></tr>
+<tr><td>#16</td><td>601668 <small>中国建筑</small></td><td>0.5041</td></tr>
+<tr><td>#17</td><td>601766 <small>中国中车</small></td><td>0.5041</td></tr>
+<tr><td>#18</td><td>601916 <small>浙商银行</small></td><td>0.5041</td></tr>
+<tr><td>#19</td><td>601988 <small>中国银行</small></td><td>0.5041</td></tr>
+<tr><td>#20</td><td>000651 <small>格力电器</small></td><td>0.5032</td></tr>
+<tr><td colspan='3' style='color:#aaa'>… 共 300 只，仅显示前 20</td></tr>
+</tbody>
+</table>
+</div>
+<div class="plain-language"><span class="emoji">📖</span><span class="text">📖 前 5 名（寒武纪 / 美的 / 盐湖股份 / 新 和 成 / 泰格医药）按 ranking score 排，但 rank-IC≈0.009 **相当于抓阄**，不要当真。</span></div>
+
+  <!-- ===== §5 ④ 买卖信号 ===== -->
+  <h2>§5 ④ 买卖点信号（TradeSignalModel）</h2>
+  <div class="card">
+<div class="signal-distribution"><div class="signal-bar buy" style="width:0%;min-width:60px"><span>↑ 看涨 1 只</span></div><div class="signal-bar sell" style="width:58%;min-width:60px"><span>↓ 看跌 174 只</span></div><div class="signal-bar hold" style="width:42%;min-width:60px"><span>→ 中性 125 只</span></div></div>
+<p class="meta" style="margin-top:8px">TP 1 | HOLD 174 | SL 125 | 入场候选 1</p>
+</div>
+<div class="card">
+<table>
+<thead><tr><th>股票</th><th>信号</th><th>置信度</th><th>止盈价</th><th>止损价</th></tr></thead>
+<tbody><tr><td>300347 <small>泰格医药</small></td><td><span class='tag-tp'>TP</span></td><td>0.443</td><td>-</td><td>-</td></tr>
+</tbody>
+</table>
+</div>
+<div class="plain-language"><span class="emoji">📖</span><span class="text">📖 今天 buy 信号 1：泰格医药，置信度 0.44。但模型 macro accuracy≈33% 跟瞎猜一样，**不构成投资建议**。</span></div>
+
+  <!-- ===== §6 历史准确率（P14 落盘后可用）===== -->
+  <h2>§6 历史准确率</h2>
+  <div class="card">
+    <p class='meta'>暂无历史准确率数据（P14 落盘后可用）</p>
+  </div>
+
+  <!-- ===== §7 运行元数据 ===== -->
+  <h2>§7 运行元数据</h2>
+  <div class="card">
+    <table>
+      <tr><td><strong>报告生成时间</strong></td><td>2026-05-22T11:08:32</td></tr>
+      <tr><td><strong>总耗时</strong></td><td>10870.408323049545 秒</td></tr>
+      <tr><td><strong>数据截至日</strong></td><td>2026-05-22</td></tr>
+      <tr><td><strong>股票池规模</strong></td><td>300 只</td></tr>
+      <tr><td><strong>模型文件路径</strong></td><td><code>direction=artifacts/models/direction_2026-05-19.lgb; return_=artifacts/models/return_2026-05-19.lgb; ranking=artifacts/models/ranking_2026-05-19.lgb; trade_signal=artifacts/models/trade_signal_2026-05-19.lgb</code></td></tr>
+      <tr><td><strong>预测 JSON 落盘</strong></td><td><code>artifacts/daily_reports/predictions_2026-05-22.json</code></td></tr>
+      <tr><td><strong>运行错误</strong></td><td>无</td></tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    A股量化预测学习项目 · 仅供学习 · 不构成投资建议<br>
+    generated by astock-quant Stage 4 P13
+  </div>
+
+</div>
+</body>
+</html>
