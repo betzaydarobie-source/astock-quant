@@ -172,6 +172,70 @@ def compute_ttm_eps(records: list[FinancialMetrics]) -> dict[str, float]:
     return out
 
 
+def compute_ttm_roe(records: list[FinancialMetrics]) -> dict[str, float]:
+    """对一只票的全部报告期记录，算每期的 TTM（滚动 12 月）ROE.
+
+    同花顺的 `净资产收益率` 和 EPS 一样是**累计 YTD**口径：Q1=一季度，Q2=上半年，
+    Q3=前三季度，Q4=全年（实测 601838：4.46→9.54→13.75→18.78 逐季递增确认）。
+    所以「最新报告期」的 roe 在最新是季报时只是单季数字（如成都银行 2026Q1 roe=3.5，
+    远小于全年量级 ~15%）。换算成滚动 12 月，与 TTM EPS 同公式：
+
+        TTM_ROE[本期] = ROE_YTD[本期] + ROE_YTD[上一年年报] - ROE_YTD[去年同期]
+
+    例：2026Q1 的 TTM = 2026Q1_YTD + 2025全年 - 2025Q1_YTD（成都银行 ≈ 3.5+15.39-3.7
+    = 15.19%，全年量级）。年报（Q4）本身即全年 = 天然 TTM，直接用。
+
+    ⚠️ 口径说明：ROE 是「比率」不是「金额」，严格说三个 YTD 比率相加减只是近似
+    （净利润可加减、但分母净资产各期不同）。不过对「把单季 ROE 还原成全年量级」这个
+    **展示**目的，这个近似足够好（量级正确、避免用户误读单季 3.5% 为全年）。本函数
+    仅服务报告展示层，不进入 value_score 打分 / 回测 —— 打分用的 roe 因子口径不变。
+
+    参数 records：单只票的 FinancialMetrics 列表（顺序不限，内部按报告期排序）。
+    返回：{report_period: ttm_roe}，只含能算出 TTM 的报告期。
+
+    防 look-ahead：TTM 只用「本期及更早」的报告期，不碰未来。
+    """
+    ytd: dict[str, float] = {}
+    for r in records:
+        if r.roe is not None:
+            ytd[r.report_period] = float(r.roe)
+
+    out: dict[str, float] = {}
+    for rp, roe_ytd in ytd.items():
+        q = _quarter_of(rp)
+        if q == 0:
+            continue
+        if q == 4:
+            out[rp] = roe_ytd  # 年报：累计即全年 = 天然 TTM
+            continue
+        year = int(rp[:4])
+        prev_annual = ytd.get(f"{year - 1}1231")
+        prev_same_q = ytd.get(f"{year - 1}{rp[4:8]}")
+        if prev_annual is None or prev_same_q is None:
+            continue  # 缺上年报或去年同期 → 这期算不出 TTM
+        out[rp] = roe_ytd + prev_annual - prev_same_q
+    return out
+
+
+def latest_ttm_roe_as_of(
+    records: list[FinancialMetrics],
+    curr_date: str | pd.Timestamp,
+) -> float | None:
+    """站在 curr_date，取「已披露」财报里最新一期的 TTM ROE —— 报告展示用.
+
+    防 look-ahead：先用 `as_of` 取「publish_date <= curr_date 的最新一期」财报，
+    再从该期取 TTM ROE。即只反映「截至 curr_date 已公布」的财报，年报在次年 4 月底
+    才披露，1~3 月不会误用它。
+
+    返回：最新一期 TTM ROE（全年量级，%）；算不出 / 无可见财报时 None。
+    """
+    visible_latest = as_of(records, curr_date)
+    if visible_latest is None:
+        return None
+    ttm = compute_ttm_roe(records)
+    return ttm.get(visible_latest.report_period)
+
+
 # ===========================================================================
 # 1. 拉取 —— akshare 同花顺财报 + 东财分红
 # ===========================================================================
@@ -453,6 +517,8 @@ def as_of(
 __all__ = [
     "statutory_publish_date",
     "compute_ttm_eps",
+    "compute_ttm_roe",
+    "latest_ttm_roe_as_of",
     "fetch_financial_history",
     "load_financial_history",
     "cache_path",

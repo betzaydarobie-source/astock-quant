@@ -700,6 +700,90 @@ class TestBuildValuePicks:
         picks = _build_value_picks(None, None, "2026-05-16")
         assert picks == []
 
+    def test_roe_shown_as_ttm_full_year_when_financials_given(self):
+        """T10：传入 financials 时，§1 ROE 显示「全年口径」TTM ROE，不是单季数.
+
+        构造一只票：最新报告期是 2026Q1，单季累计 ROE=3.5（季报口径，会误导用户）。
+        提供完整 4 季 + 上年同期记录让 TTM 算得出：
+          TTM ROE(2026Q1) = 3.5 + 2025全年(15.0) - 2025Q1(3.6) = 14.9（全年量级）。
+        断言 pick 里的 roe ≈ 14.9，不是 3.5。
+        """
+        import pandas as pd
+        from astock_quant.contracts import FinancialMetrics
+        from astock_quant.predict.daily import _build_value_picks
+
+        scores = pd.DataFrame(
+            {
+                "composite_score": [0.9],
+                "value_score": [0.8],
+                "quality_score": [0.75],
+                "growth_score": [0.5],
+            },
+            index=pd.MultiIndex.from_tuples(
+                [(pd.Timestamp("2026-05-16"), "601838")], names=["date", "ticker"]
+            ),
+        )
+        # 季报口径 ROE 累计 YTD：单季 3.5、上年同期 3.6、上年全年 15.0
+        recs = [
+            FinancialMetrics(ticker="601838", report_period="20250331",
+                             publish_date="20250430", roe=3.6),
+            FinancialMetrics(ticker="601838", report_period="20251231",
+                             publish_date="20260430", roe=15.0),
+            FinancialMetrics(ticker="601838", report_period="20260331",
+                             publish_date="20260430", roe=3.5),
+        ]
+        picks = _build_value_picks(
+            scores, None, "2026-05-16", financials={"601838": recs}
+        )
+        assert len(picks) == 1
+        roe = picks[0]["roe"]
+        assert roe is not None
+        # TTM = 3.5 + 15.0 - 3.6 = 14.9（全年量级），不是单季 3.5
+        assert abs(roe - 14.9) < 1e-6, f"§1 ROE 应是全年口径 TTM 14.9，实际 {roe}"
+
+    def test_roe_ttm_respects_publish_date(self):
+        """T10：TTM ROE 展示严守披露日 —— 年报披露前不用它.
+
+        站在 2026-03-15：2025 年报（publish_date=2026-04-30）还没披露，最新可见的是
+        2025Q3。所以这天的 TTM ROE 应基于 2025Q3，而不是用上 2025 年报数据。
+        """
+        import pandas as pd
+        from astock_quant.contracts import FinancialMetrics
+        from astock_quant.predict.daily import _build_value_picks
+
+        scores = pd.DataFrame(
+            {
+                "composite_score": [0.9], "value_score": [0.8],
+                "quality_score": [0.75], "growth_score": [0.5],
+            },
+            index=pd.MultiIndex.from_tuples(
+                [(pd.Timestamp("2026-03-15"), "601838")], names=["date", "ticker"]
+            ),
+        )
+        # 2025 三季报（披露 2025-10-31，3-15 前已可见）+ 2025 年报（披露 2026-04-30，未来）
+        recs = [
+            FinancialMetrics(ticker="601838", report_period="20240930",
+                             publish_date="20241031", roe=13.0),
+            FinancialMetrics(ticker="601838", report_period="20241231",
+                             publish_date="20250430", roe=17.0),
+            FinancialMetrics(ticker="601838", report_period="20250930",
+                             publish_date="20251031", roe=12.0),
+            FinancialMetrics(ticker="601838", report_period="20251231",
+                             publish_date="20260430", roe=15.0),  # 未来，不应被用
+        ]
+        picks = _build_value_picks(
+            scores, None, "2026-03-15", financials={"601838": recs}
+        )
+        assert len(picks) == 1
+        # 站在 3-15，最新可见是 2025Q3 → TTM = 12.0 + 17.0 - 13.0 = 16.0
+        # 若误用 2025 年报会得 15.0（look-ahead）
+        roe = picks[0]["roe"]
+        assert roe is not None
+        assert abs(roe - 16.0) < 1e-6, (
+            f"3-15 时 TTM ROE 应基于 2025Q3（=16.0），实际 {roe} —— "
+            "若为 15.0 说明误用了未披露的 2025 年报"
+        )
+
 
 # ---------------------------------------------------------------------------
 # 价值选股推荐名单渲染

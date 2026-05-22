@@ -103,6 +103,7 @@ def _build_value_picks(
     factor_frame: "Any | None",
     date_str: str,
     top_n: int = 20,
+    financials: dict | None = None,
 ) -> list[dict[str, Any]]:
     """Convert compute_value_scores() output → renderer value_picks list.
 
@@ -113,6 +114,9 @@ def _build_value_picks(
                       (pe, pb, roe) for display; None means those columns show '-'.
         date_str:     The report date (YYYY-MM-DD) to slice the latest scores.
         top_n:        Maximum picks to include (default 20).
+        financials:   Optional {ticker: list[FinancialMetrics]} —— 用来把 §1 的 ROE
+                      展示值换成「全年口径」TTM ROE（T10）。None 时退回因子矩阵里的
+                      最新报告期 ROE（最新是季报时会偏小，仅作降级）。
 
     Returns:
         list of dicts, each with keys: ticker, composite_score, value_score,
@@ -128,6 +132,21 @@ def _build_value_picks(
 
     if scores_df is None or scores_df.empty:
         return []
+
+    # T10：预计算每只票的「全年口径」TTM ROE —— §1 ROE 列展示用。
+    # 严守披露日安全：latest_ttm_roe_as_of 内部用 publish_date 截断到 date_str。
+    ttm_roe_by_ticker: dict[str, float] = {}
+    if financials:
+        try:
+            from astock_quant.data.fundamentals import latest_ttm_roe_as_of
+            for tk, recs in financials.items():
+                if not recs:
+                    continue
+                v = latest_ttm_roe_as_of(recs, date_str)
+                if v is not None:
+                    ttm_roe_by_ticker[str(tk)] = v
+        except Exception:  # noqa: BLE001 —— TTM ROE 算不出不应让整个 §1 崩
+            ttm_roe_by_ticker = {}
 
     # Slice to the most recent date at or before report date
     try:
@@ -187,6 +206,15 @@ def _build_value_picks(
             pe = _get_float(raw_row, "pe")
             pb = _get_float(raw_row, "pb")
             roe = _get_float(raw_row, "roe")
+
+        # T10：§1 ROE 列改为「全年口径」。raw 里的 roe 因子是「最新报告期」ROE ——
+        # 最新报告是季报时它是单季累计数（如成都银行 2026Q1 roe=3.5），用户误读为
+        # 全年。这里用 TTM ROE（滚动 12 月，全年量级，银行 ~12-18%）覆盖展示值。
+        # 严守披露日安全：latest_ttm_roe_as_of 只取「截至 date_str 已披露」的财报。
+        # 仅改展示，不动 value_score 打分用的 roe 因子（避免影响回测）。
+        ttm_roe = ttm_roe_by_ticker.get(str(ticker))
+        if ttm_roe is not None:
+            roe = ttm_roe
 
         # Auto-generate entry reason from sub-scores.
         # Scores are cross-sectional ranks (0=bottom, 1=top) within today's universe,
@@ -276,7 +304,10 @@ def _try_build_value_picks(
         if scores_df is None or (hasattr(scores_df, "empty") and scores_df.empty):
             return None
 
-        return _build_value_picks(scores_df, factor_frame, date_str, top_n=20)
+        return _build_value_picks(
+            scores_df, factor_frame, date_str, top_n=20,
+            financials=factor_data.get("financials"),
+        )
 
     except Exception as e:  # noqa: BLE001
         logger.info("value_picks 构建跳过（T2 尚未就绪或数据不足）：%s", e)
