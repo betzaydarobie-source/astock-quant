@@ -8,7 +8,7 @@
 数据源分工（实测确认 2026-05-15 可用）
 ────────────────────────────────────────────────────────────────────────
   get_prices      mootdx (TCP 7709)   —— 日线 OHLCV，单次最多 800 根，分页拼接
-  get_financials  akshare             —— stock_financial_abstract（EPS/ROE/营收/净利…）
+  get_financials  akshare 同花顺源     —— stock_financial_abstract_ths（EPS/ROE/营收/净利…）
                   + mootdx finance     —— 总股本/流通股本快照
                   + 腾讯财经            —— 实时 PE/PB（附在最新一期）
   get_moneyflow   akshare             —— stock_individual_fund_flow（个股主力/超大/大单）
@@ -71,6 +71,33 @@ def market_prefix(code: str) -> str:
     if code.startswith("8"):
         return "bj"
     return "sz"
+
+
+def _parse_cn_number(val) -> float | None:
+    """同花顺财务字符串 → float.
+
+    同花顺 `stock_financial_abstract_ths` 返回的值是中文数字串，需解析：
+        '1.47亿' → 1.47e8      '6.28万' → 6.28e4
+        '23.38%' → 23.38（保留百分数口径，与 fundamental.ROE 因子注释一致）
+        False / '--' / '' / NaN → None（同花顺用 False 表示该期缺失）
+    """
+    if val is None or val is False:
+        return None
+    if isinstance(val, (int, float)):
+        return None if pd.isna(val) else float(val)
+    s = str(val).strip()
+    if s in ("", "False", "--", "nan", "None"):
+        return None
+    try:
+        if s.endswith("%"):
+            return float(s[:-1])
+        if s.endswith("亿"):
+            return float(s[:-1]) * 1e8
+        if s.endswith("万"):
+            return float(s[:-1]) * 1e4
+        return float(s)
+    except (ValueError, TypeError):
+        return None
 
 
 # ---------------------------------------------------------------------------
@@ -179,45 +206,43 @@ class AStockSource:
         code = normalize_ticker(ticker)
         cutoff = pd.to_datetime(end_date)
 
-        # -- akshare: 财务摘要宽表 --
+        # -- akshare 同花顺源：财务摘要（按报告期）--
+        # P24：从 stock_financial_abstract（东财源，反爬已坏 —— 持续返回空 JSON）
+        #      换成 stock_financial_abstract_ths（同花顺源，实测 HS300 10/10 稳定）。
+        #      同花顺返回长表：每行一个报告期，值是中文数字串（'1.47亿' / '23.38%'）。
         period_metrics: dict[str, dict] = {}
         try:
             import akshare as ak
 
-            fa = ak.stock_financial_abstract(symbol=code)
-            if fa is not None and not fa.empty and "指标" in fa.columns:
-                # 我们关心的指标行 → FinancialMetrics 字段名
-                wanted = {
+            fa = ak.stock_financial_abstract_ths(symbol=code, indicator="按报告期")
+            if fa is not None and not fa.empty and "报告期" in fa.columns:
+                # 同花顺中文列名 → FinancialMetrics 字段名
+                col_map = {
                     "基本每股收益": "eps",
-                    "净资产收益率(ROE)": "roe",
+                    "净资产收益率": "roe",
                     "营业总收入": "revenue",
                     "净利润": "net_profit",
-                    "股东权益合计(净资产)": "net_assets",
                     "每股净资产": "bvps",
                 }
-                # 报告期列：形如 '20251231' 的 8 位数字列名
-                period_cols = [
-                    c for c in fa.columns
-                    if isinstance(c, str) and len(c) == 8 and c.isdigit()
-                ]
-                for period in period_cols:
+                for _, row in fa.iterrows():
+                    # 报告期形如 '2025-12-31' → 归一成 '20251231'（FinancialMetrics
+                    # 契约 + fundamental 因子的 align 都按 8 位数字 %Y%m%d 解析）
+                    period = str(row["报告期"]).strip().replace("-", "")
+                    if len(period) != 8 or not period.isdigit():
+                        continue
                     # 防未来函数：报告期晚于 end_date 的丢弃
-                    if pd.to_datetime(period) > cutoff:
+                    if pd.to_datetime(period, format="%Y%m%d") > cutoff:
                         continue
                     rec: dict = {}
-                    for _, row in fa.iterrows():
-                        ind = str(row["指标"]).strip()
-                        if ind in wanted:
-                            val = row[period]
-                            if pd.notna(val):
-                                try:
-                                    rec[wanted[ind]] = float(val)
-                                except (ValueError, TypeError):
-                                    pass
+                    for cn_col, field in col_map.items():
+                        if cn_col in fa.columns:
+                            parsed = _parse_cn_number(row[cn_col])
+                            if parsed is not None:
+                                rec[field] = parsed
                     if rec:
                         period_metrics[period] = rec
         except Exception as e:  # noqa: BLE001
-            logger.warning("akshare 财务摘要失败 %s: %s", code, e)
+            logger.warning("同花顺财务摘要失败 %s: %s", code, e)
 
         # -- mootdx: 股本快照（总股本/流通股本，无报告期维度，附到最新一期） --
         total_share = float_share = None
