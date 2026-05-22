@@ -8,7 +8,8 @@
 - 实测发现这让 daily.py 完全跑不出任何报告（找不到模型文件），
   比"带警告的报告"还糟。
 - 改为：模型仍 save，但 fit 时设 `_degenerate = True` 并 logger.warning。
-  渲染层（renderer.py）通过 conf_std < 0.02 单独显示「模型严重退化警告」给用户。
+  渲染层（renderer.py）通过 conf_std < 0.02 显示「教学示例」说明给用户
+  （P24：用户决定保留 direction 作「短期方向不可预测」的反面教材）。
 """
 
 from __future__ import annotations
