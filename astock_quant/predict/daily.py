@@ -359,7 +359,7 @@ def run_daily_predict(
         "universe_size": len(universe),
         "generated_at": _dt.datetime.now().isoformat(timespec="seconds"),
         "data_cutoff": date_str,
-        "total_seconds": float(time.time() - t_total),
+        "total_seconds": round(time.time() - t_total, 2),
         "model_version": date_str,  # 简化：模型版本 = 报告日期
         "errors": errors,
         "accuracy": None,  # P14 待实装
@@ -371,7 +371,7 @@ def run_daily_predict(
         "backtest": _load_backtest_for_report(date_str, output_dir),
     }
     # total_seconds 在 value_picks / backtest 算完后再刷新一次，反映真实耗时
-    results["total_seconds"] = float(time.time() - t_total)
+    results["total_seconds"] = round(time.time() - t_total, 2)
 
     # JSON 落盘 —— 仅作当日运行记录（value_picks + 元数据 + errors）。
     # 旧版本曾序列化 4 个短期预测 pipeline 供 P14 准确率追踪用；项目转价值选股后
