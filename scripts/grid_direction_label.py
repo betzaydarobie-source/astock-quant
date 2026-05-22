@@ -92,12 +92,35 @@ def _print_table(rows: list[dict]) -> None:
 
 def main() -> None:
     logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(message)s")
+    # 压掉数据层噪音（资金流东财源已坏，每只票一条 warning 会刷屏）
+    logging.getLogger("astock_quant.data").setLevel(logging.ERROR)
+
+    out_path = Path("artifacts/grid_direction_results.json")
+    out_path.parent.mkdir(exist_ok=True)
+
+    # 断点续跑：读已有结果，跳过已完成组合（对抗 background 进程被回收）
     rows: list[dict] = []
+    done: set[tuple] = set()
+    if out_path.exists():
+        try:
+            rows = json.loads(out_path.read_text(encoding="utf-8"))
+            done = {
+                (r["threshold"], r["horizon"])
+                for r in rows if r.get("verdict") != "ERROR"
+            }
+            if done:
+                print(f"断点续跑：已完成 {len(done)} 个组合，跳过", flush=True)
+        except Exception:  # noqa: BLE001
+            rows = []
+
     total = len(THRESHOLDS) * len(HORIZONS)
     i = 0
     for thr in THRESHOLDS:
         for h in HORIZONS:
             i += 1
+            if (thr, h) in done:
+                print(f"[{i}/{total}] threshold={thr} horizon={h} —— 已完成，跳过", flush=True)
+                continue
             print(f"[{i}/{total}] threshold={thr} horizon={h} ...", flush=True)
             try:
                 rows.append(evaluate_one(thr, h))
@@ -106,12 +129,11 @@ def main() -> None:
                     "threshold": thr, "horizon": h,
                     "verdict": "ERROR", "error": repr(e)[:200],
                 })
+            # 每组合完成立刻落盘 —— 中断后可断点续跑
+            out_path.write_text(
+                json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
 
-    out_path = Path("artifacts/grid_direction_results.json")
-    out_path.parent.mkdir(exist_ok=True)
-    out_path.write_text(
-        json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
     _print_table(rows)
     print(f"\n完整结果（含全部组合）→ {out_path}")
 
