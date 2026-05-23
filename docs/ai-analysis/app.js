@@ -15,7 +15,7 @@
   const BACKEND_BASE =
     window.__BACKEND_BASE_OVERRIDE ||
     localStorage.getItem("__BACKEND_BASE") ||
-    "REPLACE_WITH_TUNNEL_URL";
+    "https://rendering-theater-wok.ngrok-free.dev";
 
   // ---------- DOM ----------
   // 所有 id 加 ai- 前缀,避免被某些浏览器扩展(Sonner toast 等)
@@ -108,6 +108,7 @@
       const timer = setTimeout(() => ctrl.abort(), 5000);
       const res = await fetch(`${BACKEND_BASE}/api/health`, {
         method: "GET",
+        headers: { "ngrok-skip-browser-warning": "1" },
         signal: ctrl.signal,
       });
       clearTimeout(timer);
@@ -155,7 +156,10 @@
 
       const res = await fetch(url, {
         method: "GET",
-        headers: { Accept: "application/json" },
+        headers: {
+          Accept: "application/json",
+          "ngrok-skip-browser-warning": "1",
+        },
         signal: ctrl.signal,
       });
       clearTimeout(timer);
