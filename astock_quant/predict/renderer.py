@@ -40,7 +40,12 @@ def _render_today_summary(results: dict[str, Any]) -> dict[str, str]:
         top_name = get_ticker_name(top_code)
         top_score = top.get("composite_score", top.get("score"))
         try:
-            score_str = f"（综合分 {float(top_score):.3f}）" if top_score is not None else ""
+            import math as _math
+            score_str = (
+                f"（综合分 {float(top_score):.3f}）"
+                if top_score is not None and not _math.isnan(float(top_score))
+                else ""
+            )
         except (TypeError, ValueError):
             score_str = ""
         line1 = (
