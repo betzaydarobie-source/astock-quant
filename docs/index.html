@@ -89,18 +89,65 @@
     padding: 0.8rem 1rem; border-radius: 0 6px 6px 0;
     font-size: 0.8rem; color: #5d4037; line-height: 1.6;
   }
+  /* AI 分析入口卡 */
+  .ai-entry-card {
+    display: flex; align-items: center; gap: 1rem;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfeff 100%);
+    border: 1.5px solid #16a34a;
+    border-radius: 10px;
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 1.5rem;
+    text-decoration: none; color: inherit;
+    box-shadow: 0 2px 8px rgba(22,163,74,.10);
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  }
+  .ai-entry-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(22,163,74,.18);
+    border-color: #15803d;
+  }
+  .ai-entry-icon {
+    font-size: 2rem; line-height: 1; flex-shrink: 0;
+  }
+  .ai-entry-body { flex: 1; min-width: 0; }
+  .ai-entry-title {
+    font-size: 1.05rem; font-weight: 700; color: #14532d;
+    margin-bottom: 0.3rem;
+    display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  }
+  .ai-entry-new {
+    display: inline-block;
+    background: #16a34a; color: #fff;
+    font-size: 0.65rem; font-weight: 700;
+    padding: 0.1rem 0.4rem; border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+  .ai-entry-desc {
+    font-size: 0.83rem; color: #555; line-height: 1.55;
+  }
+  .ai-entry-disclaimer {
+    color: #b45309; font-size: 0.76rem;
+  }
+  .ai-entry-arrow {
+    font-size: 1.4rem; color: #16a34a; flex-shrink: 0;
+    font-weight: 600;
+  }
   @media (max-width: 600px) {
     .latest-date { font-size: 1.4rem; }
     table { font-size: 0.8rem; }
     th, td { padding: 0.45rem 0.5rem; }
     .bt-val { font-size: 1.1rem; }
+    .ai-entry-card { padding: 0.9rem 1rem; gap: 0.7rem; }
+    .ai-entry-icon { font-size: 1.6rem; }
+    .ai-entry-title { font-size: 0.98rem; }
+    .ai-entry-desc { font-size: 0.78rem; }
   }
 </style>
 </head>
 <body>
 <div class="header">
   <h1>A股 价值选股报告 · 归档</h1>
-  <div class="subtitle">量化学习研究项目 · 更新于 2026-05-23 11:28</div>
+  <div class="subtitle">量化学习研究项目 · 更新于 2026-05-23 15:54</div>
 </div>
 <div class="container">
 
@@ -112,6 +159,18 @@
       改成了现在的「价值选股」。更早的报告是旧方法，留作历史记录。
     </div>
   </div>
+
+  <a href="ai-analysis/" class="ai-entry-card">
+    <div class="ai-entry-icon">🤖</div>
+    <div class="ai-entry-body">
+      <div class="ai-entry-title">AI 个股分析 <span class="ai-entry-new">NEW</span></div>
+      <div class="ai-entry-desc">
+        输入股票代码或中文名 → AI 调 28 个数据端点 + DeepSeek 实时分析<br>
+        <span class="ai-entry-disclaimer">⚠️ 仅供学习研究，不构成任何投资建议</span>
+      </div>
+    </div>
+    <div class="ai-entry-arrow">→</div>
+  </a>
 
   <div class="card">
     <div class="card-title">最新一期报告（2026-05-23）</div>

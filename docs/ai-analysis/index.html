@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 个股分析 · A股价值选股</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="header">
+  <h1>AI 个股分析</h1>
+  <div class="subtitle">输入股票代码或中文名,AI 调 28 个数据端点 + DeepSeek 实时分析</div>
+  <div class="back-home"><a href="../">← 返回价值选股归档首页</a></div>
+</div>
+
+<div class="container">
+
+  <div id="service-down-banner" class="service-down hidden">
+    <strong>⚠️ 服务暂未启动</strong>
+    <div class="sd-detail">AI 分析后端当前不可用(可能 host Mac 离线)。当前网站静态部分(价值名单、每日报告)仍可正常访问。</div>
+  </div>
+
+  <div class="search-card">
+    <div class="search-row">
+      <input
+        id="query-input"
+        type="text"
+        placeholder="例如:600519、贵州茅台、成都银行"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+      >
+      <button id="analyze-btn" type="button">分析</button>
+    </div>
+    <div class="hint">
+      示例:<button class="example-chip" data-q="600519">600519</button>
+      <button class="example-chip" data-q="贵州茅台">贵州茅台</button>
+      <button class="example-chip" data-q="成都银行">成都银行</button>
+      · 支持代码或中文名
+    </div>
+  </div>
+
+  <div id="loading" class="loading-card hidden">
+    <div class="spinner"></div>
+    <div class="loading-text">
+      <strong>⏳ 正在调用 28 个数据端点 → DeepSeek 分析中</strong>
+      <div class="loading-sub">大约 10-30 秒,请稍候...</div>
+    </div>
+  </div>
+
+  <div id="error" class="error-card hidden">
+    <strong>⚠️ <span id="error-title">出错了</span></strong>
+    <div id="error-detail" class="error-detail"></div>
+  </div>
+
+  <div id="result-wrapper" class="hidden">
+
+    <div class="disclaimer-banner">
+      <strong>⚠️ 投资风险提示</strong>
+      <div class="db-detail">
+        本分析由 DeepSeek 大语言模型基于公开数据生成,<strong>不构成任何投资建议</strong>。
+        AI 可能产生错误判断,数据可能存在延迟或缺失,请勿据此进行实盘操作。
+      </div>
+    </div>
+
+    <div class="result-head">
+      <div class="rh-title">
+        <span id="result-name">—</span>
+        <span id="result-ticker" class="rh-ticker">—</span>
+      </div>
+    </div>
+
+    <div id="result-content" class="markdown-body"></div>
+
+    <div class="result-meta">
+      <span id="meta-time">—</span>
+      <span class="meta-sep">·</span>
+      <span id="meta-endpoints">调用端点 —</span>
+      <span class="meta-sep">·</span>
+      <span id="meta-tokens">tokens —</span>
+    </div>
+
+    <div class="disclaimer-footer">
+      ⚠️ 再次提醒:本分析<strong>不构成任何投资建议</strong>,市场有风险,投资须谨慎。
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  A股量化价值选股学习项目 · AI 分析数据来源:AkShare + DeepSeek &nbsp;|&nbsp; 仅供学习研究 · 非投资建议
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/markdown-it@14/dist/markdown-it.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
