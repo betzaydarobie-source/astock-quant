@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  launchd LaunchAgent 模板 —— ai_api FastAPI 服务常驻.
+
+  使用方法 (由 team-lead 配):
+    1. 把 {{PROJECT_ROOT}} 替换为绝对路径 (e.g. /Users/wujiangjingcai/claude code/量化)
+    2. 把 {{HOME}} 替换为 $HOME
+    3. 把 {{DEEPSEEK_API_KEY}} 替换为真实 key (或继续走项目 .env, 让 uv 自动加载)
+    4. 复制到 ~/Library/LaunchAgents/com.astock.ai-api.plist
+    5. launchctl load ~/Library/LaunchAgents/com.astock.ai-api.plist
+    6. launchctl start com.astock.ai-api
+
+  日志:
+    StandardOutPath / StandardErrorPath 都落到项目 .omc/logs/ 下
+    日切 / size cap 由 launchd 自动管 (没配 LimitLoadTo, 走默认)
+
+  失败重启:
+    KeepAlive=true + Crashed=true → 进程崩了自动拉起
+    ThrottleInterval=10 → 防爆: 崩了至少等 10s 再重启
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.astock.ai-api</string>
+
+  <key>WorkingDirectory</key>
+  <string>{{PROJECT_ROOT}}</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>{{HOME}}/.local/bin/uv</string>
+    <string>run</string>
+    <string>uvicorn</string>
+    <string>services.ai_api.app:app</string>
+    <string>--host</string>
+    <string>127.0.0.1</string>
+    <string>--port</string>
+    <string>8000</string>
+  </array>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>{{HOME}}/.local/bin:/usr/local/bin:/usr/bin:/bin</string>
+    <!-- DEEPSEEK_API_KEY: 优先 launchd env, 否则走项目 .env (uv run 会加载) -->
+    <!--
+    <key>DEEPSEEK_API_KEY</key>
+    <string>{{DEEPSEEK_API_KEY}}</string>
+    -->
+    <key>LLM_PROVIDER</key>
+    <string>deepseek</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>KeepAlive</key>
+  <dict>
+    <key>Crashed</key>
+    <true/>
+    <key>SuccessfulExit</key>
+    <false/>
+  </dict>
+
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+
+  <key>StandardOutPath</key>
+  <string>{{PROJECT_ROOT}}/.omc/logs/ai_api.stdout.log</string>
+
+  <key>StandardErrorPath</key>
+  <string>{{PROJECT_ROOT}}/.omc/logs/ai_api.stderr.log</string>
+</dict>
+</plist>
