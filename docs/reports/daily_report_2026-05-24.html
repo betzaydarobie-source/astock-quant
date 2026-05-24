@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A股价值选股报告 — 2026-05-24</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+         background: #f5f5f5; color: #333; line-height: 1.6; }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 1.8em; margin-bottom: 8px; }
+  h2 { font-size: 1.3em; border-bottom: 2px solid #ddd; padding-bottom: 6px;
+       margin: 24px 0 12px; }
+  h3 { font-size: 1.05em; margin: 16px 0 8px; color: #555; }
+  .card { background: #fff; border-radius: 8px; padding: 16px 20px;
+          box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 16px; }
+
+  /* 价值选股推荐 —— 最显眼位置 */
+  .value-hero {
+    background: linear-gradient(135deg, #e6f4ea 0%, #f0f9ff 100%);
+    border-left: 4px solid #27ae60;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 0 0 24px 0;
+  }
+  .value-hero h2 { border-color: #27ae60; color: #1a6e38; margin: 0 0 10px 0; }
+
+  /* 诚信声明 */
+  .disclaimer {
+    background: #fff3cd; border: 2px solid #e6a817;
+    border-radius: 8px; padding: 16px 20px; margin-bottom: 20px;
+  }
+  .disclaimer h2 { border-color: #e6a817; color: #856404; }
+  .disclaimer ul { margin-left: 20px; color: #856404; margin-top: 8px; }
+
+  /* 今日速览 */
+  .today-summary {
+    background: #fff7e6;
+    border-left: 4px solid #fa8c16;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 0 0 24px 0;
+  }
+  .today-summary h2 { border-color: #fa8c16; color: #ad6800; margin: 0 0 10px 0; }
+  .today-summary .summary-line { margin: 4px 0; font-size: 16px; }
+  .today-summary .honesty { color: #d4380d; font-weight: bold; }
+
+  /* 回测区 */
+  .backtest-card {
+    background: #f6f8ff;
+    border-left: 4px solid #2c7be5;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+
+  /* 表格 */
+  table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+  th { background: #f0f4ff; padding: 7px 10px; text-align: left;
+       border-bottom: 2px solid #c5d3e8; }
+  td { padding: 6px 10px; border-bottom: 1px solid #eee; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f9f9f9; }
+  td small { color: #888; font-size: 0.85em; margin-left: 4px; }
+
+  /* 元数据 */
+  .meta { font-size: 0.8em; color: #888; margin-top: 8px; }
+  .footer { text-align: center; font-size: 0.75em; color: #aaa;
+            margin-top: 32px; padding-top: 16px; border-top: 1px solid #eee; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>📊 A股价值选股报告</h1>
+  <p class="meta">报告日期：2026-05-24 &nbsp;|&nbsp; 股票池：300 只 &nbsp;|&nbsp; 生成时间：2026-05-24T12:40:54</p>
+
+  <!-- ===== 今日一句话总结（命门：today-summary 必须在 disclaimer 之前）===== -->
+  <div class="today-summary">
+    <h2>🎯 今日速览</h2>
+    <p class="summary-line">🎯 今日一句话：本期综合分最高的是 金山办公（688111）（综合分 0.779）—— 综合分看的是「又便宜又能赚钱」，不是预测明天涨跌。</p>
+    <p class="summary-line">🥇 本期推荐名单共 20 只，按综合分降序排列；策略设计是每季度调一次仓、长期持有。</p>
+    <p class="summary-line honesty">⚠️ 诚信结论：这套价值选股策略在历史回测里有跑赢沪深300的迹象（回测年化超额约 6.3%，但样本小、偏乐观），但「回测跑赢」不等于「实盘能赚钱」。全部仅供学习研究，不构成投资建议。</p>
+  </div>
+
+  <!-- ===== 诚信声明（红线，永远不可省略）===== -->
+  <div class="disclaimer">
+    <h2>⚠️ 诚信声明 —— 请先读这里</h2>
+    <p>本报告是<strong>中长期价值选股</strong>策略，目标是找又便宜又能赚钱的好公司，按季度持有，尝试长期跑赢沪深300。</p>
+    <ul>
+      <li>综合评分基于历史 PE/PB/ROE 数据，<strong>不预测短期股价涨跌</strong></li>
+      <li>回测结果是历史表现，<strong>不代表未来实盘收益</strong></li>
+      <li>A股市场情绪波动大，即使好公司也可能短期被市场错杀</li>
+      <li>本报告所有信号<strong>不构成任何投资建议</strong>，仅供量化学习研究</li>
+    </ul>
+  </div>
+
+  <!-- ===== 今日市场速览 (LLM 综述, 可选) ===== -->
+  <div class="card" style="background:#f0f9ff;border-left:4px solid #1890ff">
+<h3 style="margin-top:0;color:#1890ff">🤖 今日市场速览 (AI 综述)</h3>
+<div style="font-size:0.95em;line-height:1.7;color:#333">今天市场目光全聚在商业航天上，5只强势股扎堆冲榜，明显是短线资金集中博弈的方向。相比之下，覆铜板、AI算力、机器人等热点虽有表现，但散乱不少，缺乏合力。资金面不太乐观，北向全天大幅流出，沪股通净卖出超9亿，深股通更是净卖出逾31亿，外资态度偏谨慎。价值选股名单里清一色都是688开头的科创板标的，行业偏硬科技和高端制造，说明当下模型更认可这些公司的基本面质地，但市场情绪还没跟上。整体看，热点靠故事撑着，但真金白银在往外撤，短期分歧不小。今天最值得记住的一件事：商业航天一枝独秀，但北向资金大幅离场，场内热钱和外资明显在唱对台戏。<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div>
+</div>
+
+  <!-- ===== §1 本季度价值选股推荐名单 ===== -->
+  <h2>§1 本季度价值选股推荐名单</h2>
+  <div class="value-hero">
+    <h2>本期价值选股名单</h2>
+    <p class="meta">按综合分降序排列 · 综合分 = 便宜度（PE/PB 历史分位越低越便宜）+ 质量（ROE 越高越赚钱）加权</p>
+  </div>
+  <div class="card">
+<p class="meta">综合分 = 便宜度（PE/PB）+ 质量（ROE 等）加权，PE/PB 越低越便宜，ROE 越高越赚钱。</p>
+<table>
+<thead><tr><th>排名</th><th>股票</th><th>综合分</th><th>PE</th><th>PB</th><th>ROE</th><th>入选理由</th></tr></thead>
+<tbody><tr><td>#1</td><td>688111 <small>金山办公</small></td><td><strong>0.779</strong></td><td>32.1</td><td>7.7</td><td>27.4%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>这家公司的核心质地相当不错, 但价格不算特别便宜。<br><br>**1. 估值水平: 价格不低, 但也没疯狂**<br>30倍的市盈率, 绝对值看不算低, 但结合它近30%的净资产收益率, 这个价格买不算离谱。市净率7.41, 说明市场认为它有大量看不见的、值钱的东西, 比如品牌、技术壁垒或用户习惯。估值水位在历史的中间地带, 不高不低。<br><br>**2. 财务质量: 赚钱机器, 真本事**<br>净资产收益率达到27%以上, 质量分打满分, 说明这是门好生意。这背后大概率是轻资产、高毛利的模式, 卖一套软件或一个云服务的成本极低。需要留意的是, 高净资产收益率有没有靠大量借钱来实现, 不过从极低的分红负担看, 它的利润是实打实的, 自由现金流应该相当<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#2</td><td>605499 <small>东鹏饮料</small></td><td><strong>0.709</strong></td><td>20.8</td><td>5.1</td><td>48.0%</td><td><span style='color:#555;font-size:0.88em'>当前池子里估值相对便宜、盈利质量相对较强、ROE 48.0%</span></td></tr>
+<tr><td>#3</td><td>688169 <small>石头科技</small></td><td><strong>0.622</strong></td><td>22.2</td><td>2.2</td><td>10.4%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>是一家让人能睡得着觉的公司吗？这里从几个核心维度来看一看。<br><br>---<br><br>### 估值水平<br>当前市盈率约 **23 倍**，市净率 **2.3 倍**。高增长科技消费类公司里，这个估值不算贵，也谈不上极度低估。配合 0.726 的估值分位，可以判断大体处于历史偏低区域，市场没给它很高期待。<br><br>### 财务质量<br>ROE 目前在 10% 出头，不算亮眼，但这个数字背后值得挖掘。公司过去 **分红极为慷慨**，仅近两年就合计派息超过 57 元，远超当期股价对应比例。能持续大比例分红，通常暗示自由现金流真实、账面利润含金量高，而不是靠应收账款堆出来的。需要补充关注负债率和现金流细节<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#4</td><td>688187 <small>时代电气</small></td><td><strong>0.617</strong></td><td>18.5</td><td>1.8</td><td>9.8%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>以下是基于你提供的数据, 对时代电气 (688187) 的质性诊断。<br><br>**注意: 原始数据中行业、上市日期、近 5 年净利润 CAGR 等项目缺失, 且分红数据存在异常 (半年内高额分红两次)。以下分析仅基于所给数字进行推演。**<br><br>### 估值水平<br>公司当前 PE (TTM) 为 19.36 倍, PB 为 1.84 倍。从数据给你的综合估值分位来看 (0.846, 即越接近 1 代表越便宜), **这家公司目前的股价在历史长河中不算贵, 甚至算是相对偏低的区域。** 但我们需要警惕这是否是因为公司基本面变差导致的“被动便宜”, 也就是所谓的“价值陷阱”。PB 不到 2 倍, 对于一个制造业企业来说不算离谱, 但仍需结合 ROE 来看。<br><br>### 财务质量<br>公司赚钱的能力 (ROE) 目前在 9.79%。这个数字虽然不算差, 但也谈不上特别优秀, 处于一个中规中矩的水平。**这里存在一个数据矛盾点:** 如果 PB 只有 1.84, ROE 是 9.79%, 那么对应的 PE 大概在 18 倍左右, 和你提供的 19.36 倍差不太多。**这说明公司现在赚的钱, 就是市场给它这个估值最真实的“底子”, 并没有明显的低估惊喜, 也没有明显泡沫。** 由于缺少负债和自由现金流数据, 无法判断 ROE 是通过高杠杆推上去的, 还是实打实的主业赚钱能力。<br><br>### 长期盈利能力<br>**这家公司的分红非常值得玩味。**<br>近 4 年分红从每股 4.5 元涨到了 2025 年的 10 元, 增长趋势不错。然而, **数据出现了反常识的地方: 2025 年 8 月和 10 月, 仅仅隔了两个月, 累计每股<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#5</td><td>688009 <small>中国通号</small></td><td><strong>0.615</strong></td><td>14.6</td><td>1.1</td><td>7.4%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>这是针对中国通号 (688009) 的价值视角诊断。<br><br>**1. 估值水平**<br>表面上不贵。市净率 (PB) 是 1.07, 接近 1 倍, 意味着公司如果现在清盘, 股价和净资产差不多。市盈率 (PE) 是 14.12 倍, 在成熟期的制造业里也算中等。结合估值分位是满分的 1.000, 说明在统计模型里, 它处于历史极低的估值区间。但关键问题是: 1 倍的 PB 是否真实反映了资产的价值？对于重资产公司, 如果资产回报率低, 那么 1 倍 PB 也不<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#6</td><td>688036 <small>传音控股</small></td><td><strong>0.611</strong></td><td>24.9</td><td>3.3</td><td>13.7%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>这是一份基于长期视角的价值诊断，重点看生意的本质，而不是短期价格。<br><br>### 估值水平<br>当前的估值指标显示，PE(TTM) 为 26.13 倍，PB 为 3.61 倍。从“估值分位” 0.752 这个指标来看（这个值越接近 1 越便宜），目前的价格不算贵。但是，PB 超过 3 倍，意味着你用 3 块多钱买公司 1 块的净资产，这里面包含了对它品牌、技术或市场地位的溢价。如果未来这些无形资产无法持续变现，这个价格就偏高了。<br><br>### 财务质量<br>硬伤在于**核心财务数据缺失**。这里只有 ROE 13.67%，算是中等水平，不算特别出色。但更关键的毛利、净利、负债率和自由现金流都看不到。没有这些数据，就像看一个人只看身高体重，却不知道心肺功能如何。我们无法判断 13.67% 的 ROE 是靠高毛利的产品力，还是靠高杠杆堆出来的。如果是后者，风险就大了。<br><br>### 长期盈利能力<br>分红记录显示了一个**需要警惕的信号**。2024 年 6 月大手笔派息 30 元，但到了 2025 年直接降到 15 元，再到 2026 年预期的 9 元，呈断崖式下降。这说明公司的现金流或盈利状况在 2023 年（对应 2024 年报告期）的高峰后，出现了很大波动。一家能让人睡得着觉的公司，分红应该像工资一样稳定增长，而不是像过山车。<br><br>### 安全边际<br>因为看不到企业的自由现金流和详细的资产负债情况，很难计算安全边际。仅从股东户数在 2026<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#7</td><td>688256 <small>寒武纪</small></td><td><strong>0.598</strong></td><td>186.6</td><td>39.6</td><td>28.8%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>寒武纪这家公司，一眼看过去数据矛盾挺大，得拆开瞧瞧：<br><br>估值分位只有 0.16，说明历史上绝大多数时间比现在便宜，当前差不多 300 倍市盈率、66 倍市净率，属于“极度贵”的定价。质量分位却高达 0.88，ROE 接近 29%，证明它这会儿确实很赚钱，赚钱能力在 A 股里头算顶尖那批。<br><br>矛盾就在于：**它赚钱，但贵得离谱，而且赚钱的持续性要打个大问号**。ROE 高是突然起来的，不是常年稳在高位。“近 5 期分红”只看到一笔今年 5 月的 15 元派息，之前几年没看到分红记录，说明刚具备回馈股东的能力，或者只是特殊年份的举动。股东户数还在增加，筹码并未集中，更像情绪推动。<br><br>最需要警惕的是“估值陷阱”的反面——**梦想陷阱**。300 倍 PE 意味着市场已经把未来很多年超高增长都算进去了。一旦增长没达标，或者行业竞争格局变差，杀估值的幅度会非常剧烈。靠单年 ROE 高维持不住 8000 多亿市值的，得有连续五到十年真金白银的现金流入才行，这一点目前数据还看不出来。<br><br>长期盈利能力需要更长时间验证，安全边际现阶段几乎为零，整个定价建立在“越来越好”的假设上，容错空间极窄。<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#8</td><td>688008 <small>澜起科技</small></td><td><strong>0.595</strong></td><td>110.7</td><td>14.5</td><td>19.1%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>估值这块，澜起科技看着让人手心冒汗。PE (TTM) 接近 130 倍，PB 超过 15 倍，这意味着市场把未来很多年的利润都提前「折现」到当前股价里了。综合分位里明确的估值分位只有 0.27，在历史极贵的区间，不是捡便宜的阶段。<br><br>财务质量上，公司赚钱的本事是真硬。ROE 做到 19% 以上，质量分位高达 0.917，说明在同类公司里，它是顶尖的印钞机。但矛盾点也出来了：这么高的资产回报率，离不开它轻资产、高技术的生意模式，同时也意味着一旦技术护城河变窄，高回报吸引的竞争者会把利润迅速拉低。<br><br>长期赚钱能力让人踏实。近 5 期分红很实在，从每股 3 元涨到 3.9 元、再涨到最近一期的 4 元（2 元那期是年度第二次分，不能单看），能持续真金白银分钱，说明利润不是纸面数字。ROE 也很稳定，不是靠某一年行情好撑起来的。<br><br>安全边际几乎没有。质量好不等于价格好。当前价已经脱离基本面支撑，<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#9</td><td>688012 <small>中微公司</small></td><td><strong>0.558</strong></td><td>98.8</td><td>11.2</td><td>12.4%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>从数字上看，中微公司现在很不便宜。PE 超过 108 倍，<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#10</td><td>688271 <small>联影医疗</small></td><td><strong>0.545</strong></td><td>48.5</td><td>4.2</td><td>9.0%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>联影医疗这家公司的账面故事挺有意思：**估值不便宜，但赚钱能力不算差，分红意愿足而成长速度平平。**<br><br>### 1. 估值水平<br>当前 50 倍的市盈率（PE）和 4.35 倍的市净率（PB），绝对值不低。估值分位 0.495，意味着它现在的价格大概处于历史中间水平，既没被疯抢，也没被冷落，属于“正常偏贵”的状态。对于一个市场通常愿意给高估值的医疗器械公司，这个价格对应的是“高预期”，而不是“捡便宜”。<br><br>### 2. 财务质量<br>全年口径下，ROE 只有 8.99%，这个数字老实讲，不算特别亮眼，说明公司用股东的钱赚钱的效率还有提升空间。不过，质量分位有 0.667，在整体市场里属于中上等，说明它赚的是真钱、资产结构相对健康，不是靠砌高风险资产堆出来的利润。<br><br>### 3. 长期盈利能力<br>从分红历史看，公司对股东的回馈很积极，连续派息，金额不低。但成长分位只有 0.4，拉低了整体分数，暗示过去几年的利润增速可能没达到市场当初的预期那般快，或者说增长的“加速度”放慢了。这需要警惕：高 PE 需要高增长来消化，如果增长只是中规中矩，估值就站不太稳。<br><br>### 4. 安全边际<br>当前价格离便宜的打折区还有距离。万一行业竞争加剧或采购政策发生变化，50 倍 PE<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#11</td><td>688472 <small>阿特斯</small></td><td><strong>0.543</strong></td><td>35.6</td><td>2.2</td><td>6.4%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>## 估值水平<br>当前市盈率（PE）35倍，对于一家净资产收益率（ROE）仅6.41%的公司来说，估值不算便宜。市净率（PB）2.23倍，意味着市场给出的价格是公司净资产的2倍多。从数据给的估值分位看，0.682分意味着在它自身的估值历史里，现在的价格不算贵，但这就像跟自己比而不是跟全班比，需要结合同行业对手来判断是否真的划算。<br><br>## 财务质量<br>ROE只有6.41%，这是股东投入一百块、一年赚六块四的概念，盈利能力偏弱。质量分位0.400分也印证了这点，说明它在赚钱能力上处于中下游水平。负债情况、毛利率、自由现金流这些关键数据缺失，没法判断它的ROE低是行业特性还是加了高杠杆，也没法算它到底有多少真金白银能揣进兜里。<br><br>## 长期盈利能力<br>从分红记录看，2024年每10股派息11.96元，2025年每10股派息9.34元，分红力度有下降趋势，连续性存在疑问。净利润长期增长率、ROE稳定性这些数据缺失，看不出来它有没有持续赚钱的真本事。<br><br>## 安全边际<br>以当前的盈利水平衡量，价格没什么保护垫。万一行业转差，低ROE和不明朗的负债情况会让它承受不小压力。不过，<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#12</td><td>688396 <small>华润微</small></td><td><strong>0.495</strong></td><td>90.2</td><td>3.5</td><td>4.0%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>## 华润微 (688396) 价值视角诊断<br><br>### 估值水平<br>当前 PE(TTM) 高达 91.35 倍，PB 3.58 倍。这个估值水平，放在任何成熟的半导体公司里都算不上便宜。综合估值分位 0.409，意味着在历史估值中处于中等偏下，但绝对值依然很贵。91 倍的市盈率，相当于假设未来每年利润不变，需要 91 年才能通过利润收回投资成本。市场显然在为未来的高增长买单。<br><br>### 财务质量<br>最扎眼的数据是 ROE，只有 3.97%。这个赚钱效率放在银存里都不算高，而公司承担的是半导体行业的高风险。3.97% 的 ROE 对应 3.58 倍的 PB，意味着你花 3.58 元买的是 1 元净资产，而这 1 元净资产一年只赚约 4 分钱。财务数据上没有看到毛利、负债、自由现金流的细节，但如此低的 ROE 通常意味着公司要么处在重资产投入期，资产还没产生效益；要么就是盈利能力本身很平庸。需要警惕的是，数据矛盾已经出现——成长分位高达 0.725，暗示近年收入或资产在扩张，但 ROE 却如此之低，典型的“增收不增利”，钱可能全砸在建厂和扩产上了。<br><br>### 长期盈利能力<br>分红数据讲了一个值得留意的故事：从 2022 年的每股 1.718 元，一路降到 2023 年的 1.983 元（这里有个小矛盾，略增），再到 2024 年的 1.118 元，2025 年两次合计 0.84 元。派<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#13</td><td>688041 <small>海光信息</small></td><td><strong>0.495</strong></td><td>256.8</td><td>30.0</td><td>12.4%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>这家公司给价值投资者出了一连串难题。先看估值，PE(TTM)高达266倍，PB超过30倍，估值分位低到0.075，意味着它几乎比历史上任何时候都贵。市场显然不是按它现在能赚多少钱来定价，而是押注了一个遥远的未来。<br><br>生意本身有些亮点，质量分位0.8，ROE有12.39%，说明公司具备一定的真实盈利能力，不是纯靠吹概念。分红记录也佐证了这一点，近三年稳定在每股一块钱以上，说明挣的是真钱，也愿意和股东分享。成长分位0.725，预示着市场认为它还在快速扩张期。<br><br>但矛盾点立刻跳出来。12%的ROE撑不起30倍的PB，这背后是市场极高的增长预期。最关键的财务质量数据是缺失的，我们看不到负债率、毛利率和自由现金流。不知道这12%的ROE是轻资产高毛利驱动，还是背了一身债靠杠杆撬动，这决定了生意的安全性和持久性。主营业务的行业归属也不明确。<br><br>风险在于预期落空。266倍的PE，只要业绩增速不及预期，估值下滑的幅度会非常剧烈，这是典型的“对，但太贵”的困境。股东户数一个季度增加近4%，散户在加速入场，通常不是个好信号。<br><br>综合看，这是一家似乎有真本事但身价被炒到天上的公司。能让人睡着觉的资产，要么价格有足够的安全垫，要么生意模式清晰到能穿越牛熊。它目前两者都不沾，更像是用望远镜看未来，但脚尖已经踩在悬崖边。<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#14</td><td>688303 <small>大全能源</small></td><td><strong>0.485</strong></td><td>-</td><td>1.2</td><td>-3.5%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>这是一份对大全能源的纯价值视角分析。需要提前说明的是，这家公司当前呈现出一个非常极端的矛盾状态：数据打分在“估值”和“质量”上完全背离，这在传统价值分析中需要格外审慎。<br><br>---<br><br>### 1. 估值水平<br>从数字看，当前估值分位高达 0.916，意味着估值在历史上处于很便宜的位置。PB 1.16 倍，看起来不贵。但这里有一个巨大的隐形陷阱：PE 是负的（-32.29），因为公司 ROE（净资产收益率）也是负的（-3.53%）。一个不赚钱的公司，看 PE 和 PB 的意义会大打折扣。便宜，是因为公司正在亏钱，而不是被市场错杀。<br><br>### 2. 财务质量<br>财务质量的得分只有 0.133，在赚钱能力这个维度上非常低。ROE 为 -3.53%，意味着股东每投入 100 元，公司不仅没赚，还亏掉 3 块多。对于价值投资来说，这是最核心的硬伤。我们无法从现有数据中看到毛利、净利、负债和自由现金流的具体数字（该项数据缺失），但负 ROE 本身已经说明，这家公司当前阶段缺乏真正的内生赚钱能力。<br><br>### 3. 长期盈利能力与分红<br>分红数据揭示了一个更深的矛盾，这是理解这家公司本质最关键的一点：<br>*   **去年（2023年）的分红极其惊人**：每股派息高达 36 元。乍一看以为公司赚翻了，但结合现在的负收益，这更像是一次性、不可持续的特殊派息，可能来自前两年行业景气高峰时的利润积累或资产处置。<br>*   **今年的分红也<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#15</td><td>688223 <small>晶科能源</small></td><td><strong>0.440</strong></td><td>-</td><td>2.8</td><td>-24.9%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>先看一组矛盾：**估值分位 0.846 极便宜,但质量分位只有 0.167**。这是典型“东西在清仓甩卖,但质量堪忧”的信号。<br><br>**1. 估值水平 —— 一眼看贵贱**<br>PE 是负数(-10.06),说明公司目前不赚钱,不能拿市盈率说事。PB 2.76 倍,相对光伏制造这个重资产行业,不算深坑,只能说不贵。**需要警惕**的是,之所以显得“估值便宜”,是因为盈利垮了,而不是市值真被低估了。<br><br>**2. 财务质量 —— 真金白银还是纸面富贵**<br>ROE 为 -24.86%,这个数字意味着股东每投入100块钱,一年要亏掉近25块——**烧股东的钱在经营**。毛利、负债、自由现金流这些关键数据缺失,没法判断亏的到底是价格战造成的暂时亏损,还是商业模式本身就不赚钱。但不管你数据丢没丢,赚钱的本事目前是证伪的。<br><br>**3. 长期盈利能力 —— 是长跑选手还是短跑**<br>过去5年净利润年化增长无法直接算,但从2022年派2毛3,2023年派8毛9,突然跳到2024年派2块2毛4的分红节奏看,**利润波动极大**。而且ROE直接跌成负值,稳定性为0。这种公司更像周期股,出产能、赌价格,赚的时候猛赚,亏的时候硬扛。<br><br>**4. 安全边际 —— 摔下来有没有垫子**<br>按PB算,每股净资产约2.43元(6.7/2.76),股价6.7元在它之上。但光伏行业如果继续内卷,这些净资产里的大量产线设备可能就要打折。**安全垫不<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#16</td><td>688126 <small>沪硅产业</small></td><td><strong>0.419</strong></td><td>-</td><td>4.7</td><td>-13.8%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>## 估值水平<br>当前PE为负，意味着公司在最近12个月处于亏损状态，无法用传统市盈率来谈“便宜”还是“贵”。市净率PB高达5.46倍，这代表你花一块钱买的是公司不到两毛钱的账面净资产，溢价非常高。综合估值分位0.48处于中等，说明在历史上不算极端的贵，但绝对估值数字本身对盈利为负的企业意义有限。市场给这么高的市净率，包含了对未来极高的增长期待。<br><br>## 财务质量<br>这里有一个需要留意的信号：质量分位仅0.167，处于低位。ROE为-13.81%，说明公司目前不仅不赚钱，还在侵蚀股东的原始投入。没有提供毛利率、负债率、自由现金流数据，但从负ROE推断，其支付利息和维持运营的能力存在压力。需要注意，它的高PB并非建立在强悍的净资产回报上，而是靠资本投入和未来预期在支撑。<br><br>## 长期盈利能力<br>相关数据缺失较多，如近5年净利润复合增长率未提供。从分红历史看，仅2024年有过一次派息，缺乏连续性和稳定性，这和一家成熟的、有持续分红能力的好生意有距离。ROE的负值直接说明，过去一年的盈利能力出现了显著问题，不是微利，而是深度亏损。成长分位高达0.8，这更像是一家处在高投入期的故事型公司，其价值依赖未来的技术突破、产能释放，而非已经兑现的利润。<br><br>## 安全边际<br>对价值投资而言，安全边际极难衡量。没有稳定的盈利和自由现金流做估值的“锚”，你很难说清楚它到底值多少钱。万一行业景气度下行，或者技术路线被替代，<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#17</td><td>688082 <small>盛美上海</small></td><td><strong>0.403</strong></td><td>63.5</td><td>6.2</td><td>12.4%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>好的，下面是对盛美上海（688082）的价值投资视角质性诊断。<br><br>---<br><br>**1. 估值水平：一眼看就不便宜**<br><br>这家公司当前的市盈率（PE）是 82 倍，市净率（PB）是 7.5 倍。这意味着，如果公司每年赚的净利润全部分给你，光靠利润回本需要 82 年；你花 7.5 块钱，只能买到公司 1 块钱的账面资产。无论是和它自己的历史比，还是跟大多数制造类同行比，这个估值都站在了很高的山岗上。市场之所以愿意给这么高的价码，不是因为它现在能赚多少钱，而是赌它未来能赚大钱。<br><br>**2. 财务质量：赚钱能力中等，但分红很实在**<br><br>公司 ROE（净资产收益率）是 12.43%。这个水平只能说“还行”，不算特别出色。用大白话说，股东每投入 100 块钱本钱，公司一年能帮忙赚回 12 块 4，比存银行强，但跟顶尖消费品公司（动辄 20%-30%）比，差距不小。不过，公司有一点很实在：分红。近几期每股派息都在 6 块多，按现在的股价算，股息率接近 3%，这个分红力度在高速成长型公司里算很大方的，说明它挣的钱里有现金，<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#18</td><td>688506 <small>百利天恒</small></td><td><strong>0.355</strong></td><td>-</td><td>18.8</td><td>-22.5%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>### 估值水平<br>当前市盈率 PE(TTM) 为 **-76.43 倍**，公司仍在亏损，无法用常规市盈率衡量。市净率 PB 高达 **17.56 倍**，在 A 股医药板块中也处于极高位置，意味着市场为每 1 元净资产支付了近 18 元的价格。估值分位仅有 0.200（满分为 1，越高越便宜），说明从历史和自己公式的衡量体系看，它目前根本不便宜，甚至偏贵。近千亿的市值全靠对未来盈利的期望撑着，这种估值就像提前把未来很多年的好日子都算进了价格里。<br><br>### 财务质量<br>ROE（全年口径）为 **-22.47%**，表明股东的钱不但没赚回来，反而在快速消耗。公司不仅不赚钱，还烧钱。目前没有分红记录，投资者唯一的回报方式就是股价上涨。财报上毛利率、净利率、自由现金流等关键数字这次没有给出，但既然 ROE 为负，净利润大概率也是亏损的，而且负债情况、自由现金流无法直接从现有数据判断。需要警惕的是：如果以后有数据，发现它高负债的同时还在亏损，那就是典型的“借钱烧”，风险会更大。<br><br>### 长期盈利能力<br>近五年的净利润 CAGR 没法直接给，但 ROE 持续为负且没有分红，基本能说明公司历史上并没能为股东稳定创造真金白银。成长分位高达 0.775，这有些矛盾：要么是收入增长很快，要么是市场只关注管线进展而不在意亏损。对搞创新药的企业来说，营收可能来自技术授权或个别产品放量，<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#19</td><td>688981 <small>中芯国际</small></td><td><strong>0.308</strong></td><td>188.9</td><td>6.4</td><td>3.4%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>### 估值水平<br>当前该公司的估值指标显示，市盈率（PE）高达208倍，意味着按现在的年利润，需要208年才能回本；市净率（PB）超过7倍，相当于用7块钱买公司账面上1块钱的净资产。这两个数字在绝对值上属于偏高水平。从给予的“估值分位”仅为0.267（满分1分）来看，综合考量其历史与市场情况，当前价格并不便宜，市场给出了极高的溢价。<br><br>### 财务质量<br>赚钱的真实效率需要仔细甄别。公司全年口径的净资产收益率（ROE）只有3.4%，这个数字相当低，说明股东每投入100元，一年只赚回3.4元，甚至不如普通理财。由于缺少毛利率、净利率、负债率和自由现金流等关键数据，目前无法判断其是真有经营壁垒，还是依赖高杠杆。可以确定的是，当前高PB与低ROE之间存在明显矛盾——花很高的溢价，买到的是不怎么赚钱的资产。<br><br>### 长期盈利能力<br>从近期的ROE水平看，其资本回报率缺乏吸引力。数据中无近5年净利润复合增长率、也无任何分红记录，显示该公司过往要么没赚到真金白银，要么将所有利润都用于再投资，未能通过持续分红回馈股东。在长期给股东创造价值的稳定性上，目前找不到积极证据。<br><br>### 安全边际<br>安全边际极薄，甚至可以说几乎没有。一家ROE仅3.4%的公司，去支撑7倍的PB和208倍的PE，这个估值如同走钢丝。万一行业景气度下滑或公司盈利不达预期，当前的估值缺乏足够的利润和净资产做“缓冲垫”来吸收冲击，价格波动的风险显得较高。<br><br>### 风险点<br>需要特别警惕“估值陷阱”。虽然它是半导体制造龙头，但给出高阶估值往往对应着高成长预期。而目前的数据（3.4%的ROE）和极低的成长分位（0.275）都在提示，现实的盈利成绩与高昂的估值之间存在落差。此外，高达6%的换手率<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#20</td><td>688047 <small>龙芯中科</small></td><td><strong>0.202</strong></td><td>-</td><td>26.8</td><td>-16.1%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>龙芯中科当前的数字，从价值投资的角度看，几乎找不到舒服的地方。股价 160.4 元，但公司是亏损的，市盈率没有参考意义；市净率高达 26.8 倍，意味着每 1 元的净资产，市场愿意给 26 块多，而这种高溢价完全建立在未来能大赚的预期上。现实是 ROE 为 -16.1%，公司不仅不赚钱，还在蚕食股东的本钱<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+</tbody>
+</table>
+</div>
+
+  <!-- ===== §2 策略回测表现 vs 沪深300 ===== -->
+  <h2>§2 策略回测表现 vs 沪深300</h2>
+  <div class="backtest-card">
+    <div class="card">
+<table>
+<thead><tr><th>指标</th><th>值</th></tr></thead>
+<tbody>
+<tr><td>策略累计收益</td><td><strong>20.7%</strong></td></tr>
+<tr><td>沪深300 同期</td><td>-8.0%</td></tr>
+<tr><td>超额收益</td><td style="color:#27ae60;font-weight:bold">6.3%</td></tr>
+<tr><td>Sharpe 比率</td><td>0.23</td></tr>
+<tr><td>最大回撤</td><td>-27.0%</td></tr>
+<tr><td>回测期间</td><td>2022-01 ~ 2026-04</td></tr>
+<tr><td>换仓次数</td><td>18 季度</td></tr>
+</tbody>
+</table>
+<p class="meta" style="margin-top:8px;color:#d4380d">⚠️ 回测区间约 4 年（2022-2026），是单一市场环境 —— 结论是「参考」，不是「铁证」。换一段历史（牛市 / 熊市 / 震荡市）结果可能完全不同。</p>
+<p class="meta" style="margin-top:6px;color:#d4380d">⚠️ 这段回测还偏乐观：样本小、选股池有幸存者偏差、超额收益主要靠 2024 年单独一年、信息比率 IR 偏低（说明这点超额并不稳）。「回测跑赢」不等于「未来实盘能赚钱」。</p>
+</div>
+  </div>
+
+  <!-- ===== §3 历史准确率（P14 落盘后可用）===== -->
+  <h2>§3 历史准确率</h2>
+  <div class="card">
+    <p class='meta'>暂无历史准确率数据（P14 落盘后可用）</p>
+  </div>
+
+  <!-- ===== §4 运行元数据 ===== -->
+  <h2>§4 运行元数据</h2>
+  <div class="card">
+    <table>
+      <tr><td><strong>报告生成时间</strong></td><td>2026-05-24T12:40:54</td></tr>
+      <tr><td><strong>总耗时</strong></td><td>16102.97 秒</td></tr>
+      <tr><td><strong>数据截至日</strong></td><td>2026-05-24</td></tr>
+      <tr><td><strong>股票池规模</strong></td><td>300 只</td></tr>
+      <tr><td><strong>预测 JSON 落盘</strong></td><td><code>artifacts/daily_reports/predictions_2026-05-24.json</code></td></tr>
+      <tr><td><strong>运行错误</strong></td><td>无</td></tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    A股量化价值选股学习项目 · 仅供学习 · 不构成投资建议<br>
+    generated by astock-quant Stage 5
+  </div>
+
+</div>
+</body>
+</html>
