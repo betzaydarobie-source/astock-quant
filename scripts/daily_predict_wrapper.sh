@@ -18,12 +18,15 @@ DATE_STR="$(date +%Y-%m-%d)"
 ERROR_LOG="$ARTIFACTS_DIR/wrapper_error_${DATE_STR}.log"
 
 notify() {
+    # 用户 2026-06-10 要求关闭每日推送:不再弹 macOS 通知,只写日志。
+    # 如需恢复,把下面 osascript 块取消注释即可。
     local title="$1"
     local message="$2"
     local subtitle="${3:-}"
-    if command -v osascript &>/dev/null; then
-        osascript -e "display notification \"$message\" with title \"$title\" subtitle \"$subtitle\"" 2>/dev/null || true
-    fi
+    echo "[notify-silenced] $title | $message | $subtitle"
+    # if command -v osascript &>/dev/null; then
+    #     osascript -e "display notification \"$message\" with title \"$title\" subtitle \"$subtitle\"" 2>/dev/null || true
+    # fi
 }
 
 publish_to_pages() {
@@ -102,11 +105,12 @@ if output="$(run_predict 2>&1)"; then
 
     notify "A股预测" "今日预测报告已生成，点击查看" "$DATE_STR"
 
-    # 打开最新报告（glob 取最新 HTML）
-    latest_html="$(ls -t "$ARTIFACTS_DIR"/daily_report_*.html 2>/dev/null | head -1 || true)"
-    if [[ -n "$latest_html" ]]; then
-        open "$latest_html" 2>/dev/null || true
-    fi
+    # 用户 2026-06-10 要求关闭每日推送:不再自动打开浏览器。
+    # 如需恢复,取消下面注释。
+    # latest_html="$(ls -t "$ARTIFACTS_DIR"/daily_report_*.html 2>/dev/null | head -1 || true)"
+    # if [[ -n "$latest_html" ]]; then
+    #     open "$latest_html" 2>/dev/null || true
+    # fi
 
     publish_to_pages
 else
