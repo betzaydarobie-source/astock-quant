@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A股价值选股报告 — 2026-06-19</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+         background: #f5f5f5; color: #333; line-height: 1.6; }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 1.8em; margin-bottom: 8px; }
+  h2 { font-size: 1.3em; border-bottom: 2px solid #ddd; padding-bottom: 6px;
+       margin: 24px 0 12px; }
+  h3 { font-size: 1.05em; margin: 16px 0 8px; color: #555; }
+  .card { background: #fff; border-radius: 8px; padding: 16px 20px;
+          box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 16px; }
+
+  /* 价值选股推荐 —— 最显眼位置 */
+  .value-hero {
+    background: linear-gradient(135deg, #e6f4ea 0%, #f0f9ff 100%);
+    border-left: 4px solid #27ae60;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 0 0 24px 0;
+  }
+  .value-hero h2 { border-color: #27ae60; color: #1a6e38; margin: 0 0 10px 0; }
+
+  /* 诚信声明 */
+  .disclaimer {
+    background: #fff3cd; border: 2px solid #e6a817;
+    border-radius: 8px; padding: 16px 20px; margin-bottom: 20px;
+  }
+  .disclaimer h2 { border-color: #e6a817; color: #856404; }
+  .disclaimer ul { margin-left: 20px; color: #856404; margin-top: 8px; }
+
+  /* 今日速览 */
+  .today-summary {
+    background: #fff7e6;
+    border-left: 4px solid #fa8c16;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 0 0 24px 0;
+  }
+  .today-summary h2 { border-color: #fa8c16; color: #ad6800; margin: 0 0 10px 0; }
+  .today-summary .summary-line { margin: 4px 0; font-size: 16px; }
+  .today-summary .honesty { color: #d4380d; font-weight: bold; }
+
+  /* 回测区 */
+  .backtest-card {
+    background: #f6f8ff;
+    border-left: 4px solid #2c7be5;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+
+  /* 表格 */
+  table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+  th { background: #f0f4ff; padding: 7px 10px; text-align: left;
+       border-bottom: 2px solid #c5d3e8; }
+  td { padding: 6px 10px; border-bottom: 1px solid #eee; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f9f9f9; }
+  td small { color: #888; font-size: 0.85em; margin-left: 4px; }
+
+  /* 元数据 */
+  .meta { font-size: 0.8em; color: #888; margin-top: 8px; }
+  .footer { text-align: center; font-size: 0.75em; color: #aaa;
+            margin-top: 32px; padding-top: 16px; border-top: 1px solid #eee; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>📊 A股价值选股报告</h1>
+  <p class="meta">报告日期：2026-06-19 &nbsp;|&nbsp; 股票池：300 只 &nbsp;|&nbsp; 生成时间：2026-06-19T08:12:53</p>
+
+  <!-- ===== 今日一句话总结（命门：today-summary 必须在 disclaimer 之前）===== -->
+  <div class="today-summary">
+    <h2>🎯 今日速览</h2>
+    <p class="summary-line">🎯 今日一句话：本期综合分最高的是 广发证券（000776）（综合分 0.787）—— 综合分看的是「又便宜又能赚钱」，不是预测明天涨跌。</p>
+    <p class="summary-line">🥇 本期推荐名单共 20 只，按综合分降序排列；策略设计是每季度调一次仓、长期持有。</p>
+    <p class="summary-line honesty">⚠️ 诚信结论：这套价值选股策略在历史回测里有跑赢沪深300的迹象（回测年化超额约 6.3%，但样本小、偏乐观），但「回测跑赢」不等于「实盘能赚钱」。全部仅供学习研究，不构成投资建议。</p>
+  </div>
+
+  <!-- ===== 诚信声明（红线，永远不可省略）===== -->
+  <div class="disclaimer">
+    <h2>⚠️ 诚信声明 —— 请先读这里</h2>
+    <p>本报告是<strong>中长期价值选股</strong>策略，目标是找又便宜又能赚钱的好公司，按季度持有，尝试长期跑赢沪深300。</p>
+    <ul>
+      <li>综合评分基于历史 PE/PB/ROE 数据，<strong>不预测短期股价涨跌</strong></li>
+      <li>回测结果是历史表现，<strong>不代表未来实盘收益</strong></li>
+      <li>A股市场情绪波动大，即使好公司也可能短期被市场错杀</li>
+      <li>本报告所有信号<strong>不构成任何投资建议</strong>，仅供量化学习研究</li>
+    </ul>
+  </div>
+
+  <!-- ===== 今日市场速览 (LLM 综述, 可选) ===== -->
+  <div class="card" style="background:#f0f9ff;border-left:4px solid #1890ff">
+<h3 style="margin-top:0;color:#1890ff">🤖 今日市场速览 (AI 综述)</h3>
+<div style="font-size:0.95em;line-height:1.7;color:#333">今天市场的主线很清晰，资金就围着“人形机器人”和“央企”这两块转，机器人接着上周的热度，央企背景的品种也明显受宠。不过算力租赁这条线也有不少人还在博弈。可惜情绪热闹归热闹，北向资金不太给面子，沪股通和深股通合计净流出超四十亿，说明外资暂时偏谨慎。龙虎榜那边，游资在热点票上换手积极，但整体进攻力度比之前温和了些。再看咱们价值选股名单，排在前头的清一色是金融股，银行、券商占了主流，这反映出在当前阶段，模型筛选出来的低估方向还是偏防御，大金融的底仓价值挺吃重。今天最值得记住的一件事，就是题材炒作和外资流向出现了背离，热钱在往里冲，但北向在往外撤。<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div>
+</div>
+
+  <!-- ===== §1 本季度价值选股推荐名单 ===== -->
+  <h2>§1 本季度价值选股推荐名单</h2>
+  <div class="value-hero">
+    <h2>本期价值选股名单</h2>
+    <p class="meta">按综合分降序排列 · 综合分 = 便宜度（PE/PB 历史分位越低越便宜）+ 质量（ROE 越高越赚钱）加权</p>
+  </div>
+  <div class="card">
+<p class="meta">综合分 = 便宜度（PE/PB）+ 质量（ROE 等）加权，PE/PB 越低越便宜，ROE 越高越赚钱。</p>
+<table>
+<thead><tr><th>排名</th><th>股票</th><th>综合分</th><th>PE</th><th>PB</th><th>ROE</th><th>入选理由</th></tr></thead>
+<tbody><tr><td>#1</td><td>000776 <small>广发证券</small></td><td><strong>0.787</strong></td><td>10.3</td><td>1.1</td><td>11.4%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>这是一份基于提供数据，从长期价值视角出发的质性诊断。广发证券作为券商，其生意模式本身带有高杠杆属性，分析时需要特别注意这点。<br><br>### 1. 估值水平 —— 不算贵，但也没捡到便宜<br>广发证券当前 PE(TTM) 是 10.32 倍，PB 是 1.17 倍。这个估值放在券商行业里看，属于历史中不溜秋的水平，既不高昂也不极端低估。<br>估值分位 0.812 这个数字（越高越便宜）暗示，从它自身历史来看，当前价格确实处于一个相对便宜的区间内。但需注意，券商是强周期行业，“便宜”往往伴随着市场情绪的低迷，不能简单地和消费股的低估值等同看待。<br><br>### 2. 财务质量 —— 赚钱能力尚可，但本质是“加杠杆”的生意<br>ROE（TTM 全年口径）为 11.42%，这个回报率对于一家券商来说，表现中规中矩，但算不上卓越。这里是关键矛盾点：券商的 ROE 背后是高负债经营，其资产和盈利高度依赖于市场行情，属于用资产负债表撬动的收益。<br>数据中缺少具体的负债率和自由现金流细节，这是分析券商股的一个天然盲区。合并利润表上的盈利，其质量远不如消费公司赚到的真金白银踏实。广发证券质量分位 0.71，表明其赚钱能力在体系中尚可，但远没到顶尖。<br><br>### 3. 长期盈利能力 —— 分红大方且持续<br>从近几期分红数据看，广发证券表现出连续、大额的分红特征。例如<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#2</td><td>601838 <small>成都银行</small></td><td><strong>0.786</strong></td><td>6.0</td><td>0.9</td><td>15.2%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>## 成都银行 (601838) 价值视角诊断<br><br>### 1. 估值水平 —— 一眼看胖瘦<br>这家公司现在的估值很&quot;骨感&quot;。市盈率 (PE) 只有 5.89 倍，意味着如果公司每年利润全部分掉，理论上不到六年就能回本；市净率 (PB) 是 0.86，属于&quot;破净&quot;状态，股价比公司账面上的净资产还打了个八六折。从估值分位 0.935 (满分1) 来看，这个便宜程度在历史上也是排在前列的，很接近最便宜的时期。这反映了市场对它所在银行行业的整体悲观预期，给了一个&quot;清仓处理&quot;的估价。<br><br>### 2. 财务质量 —— 真本事还是加杠杆？<br>公司 15.19% 的净资产收益率 (ROE) 相当亮眼，放在任何行业都是能打的水平，说明股东投入的每一块钱一年能赚回一毛五以上。但需要关注的是，银行天生是高杠杆经营的行业，这个高 ROE 是建立在高负债运营的基础上的。数据里没有直接给出负债率和自由现金流的具体构成，这是我们分析的盲区。不过，连续的现金分红历史可以为盈利的真实性背书——能持续掏出真金白银分给股东，账上的利润就不太可能是&quot;纸面富贵&quot;。<br><br>### 3. 长期盈利能力 —— 能不能&quot;长跑&quot;？<br>从分红记录看，这家公司有稳定回馈股东的意愿和记录，<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#3</td><td>601169 <small>北京银行</small></td><td><strong>0.777</strong></td><td>6.5</td><td>0.4</td><td>6.2%</td><td><span style='color:#555;font-size:0.88em'>当前池子里估值相对便宜、盈利质量相对较强</span></td></tr>
+<tr><td>#4</td><td>600919 <small>江苏银行</small></td><td><strong>0.771</strong></td><td>6.2</td><td>0.8</td><td>13.1%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>这家公司的特点是市场给的估值明显偏低，但财务质量和股东回报意愿看起来不错，不过需要警惕数据中的异常信号和银行股的同质化风险。<br><br>### 估值水平<br>当前PE 5.83倍，PB仅0.78倍，股价低于每股净资产，处于“破净”状态。5元的东西卖不到4元，在A股银行板块里属于常事，但这么低的估值也说明市场对它未来的资产质量或增长完全不抱乐观预期。估值分位0.858，意味着它比过去自己85%以上的时间都便宜，安全垫看起来厚实。<br><br>### 财务质量<br>ROE做到13.10%，在银行股里算是不错的水平，说明钱生钱的能力在银行中偏上。但数据里缺了负债、毛利率、自由现金流这些关键项，银行股看毛利没意义，可没有不良贷款率、拨备覆盖率和净息差，就像看一个人体检却少了血压和血脂指标，没法判断它赚钱的质量到底有多健康。如果这13%的ROE是靠高杠杆撑起来的，那风险就被藏起来了。<br><br>### 长期盈利能力<br>近五年净利润具体CAGR缺失，但从分红数据看，态度很积极。2023年每股分4块9，2024年分4块7，非常大方的分红力度。需要特别注意：2025-2026年间出现的“3元多”派息，如果只是年度内多次分红的数据累加，那没问题。但如果是单一报告期的数据，股价11元却单次分3元，这种股息率在逻辑上不合常理，很可能是数据处理或记录上的特殊情况，不能简单当成常规分红能力。ROE若能连续5年稳定在13%附近，证明赚钱的劲头不是昙花一现。<br><br>### 安全边际<br>股价“破净”加上不到6倍的PE，本身就在提供一种估值保护。但银行的安全边际不只看PE/PB，核心是它的资产质量经不经<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#5</td><td>600999 <small>招商证券</small></td><td><strong>0.769</strong></td><td>10.8</td><td>1.1</td><td>10.6%</td><td><span style='color:#555;font-size:0.88em'>当前池子里估值相对便宜、盈利质量尚可、成长性相对较好</span></td></tr>
+<tr><td>#6</td><td>600926 <small>杭州银行</small></td><td><strong>0.761</strong></td><td>6.4</td><td>0.9</td><td>14.2%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>**估值水平**<br>5.77 倍市盈率、0.82 倍市净率，这组数字在银行板块里属于“打折货”那一档。银行股整体估值中枢本就偏低，但破净（市净率低于 1）依然说明市场对它的资产质量没给任何溢价。换一个通俗的说法：花 8 毛 2，买它账面上 1 块钱的净资产。从估值分位 0.811 看，它比历史上大多数时候都便宜。<br><br>**财务质量**<br>ROE（净资产收益率）全年口径 14.19%，放在银行里属于很能打的学生了，说明用股东的钱赚钱的效率不低。但银行生来高杠杆，这个 ROE 是踩在很高的负债上实现的，不能简单跟轻资产消费品公司比。遗憾的是，财报中毛利、净利、自由现金流这类实体企业常用指标，对银行不适用，因此缺少直接可比的赚钱质量数据。<br><br>**长期盈利能力**<br>近五年净利润 CAGR（年复合增长率）数据缺失，无法直接看成长轨迹。但可以从另一个窗口——分红——来洞察。近五期分红记录显示，每年坚持分两次，合计每股派息高达 6.5 元到 7.4 元不等，按当前股价 15.64 元算，股息率超过 40%？这数字看起来异常。实际上市银行年报的大额分红往往包含中期特别派息或因为前一年利润丰厚，每股派息数字被“除权除息”后的统计口径拉高了。真正能反映常态分红能力的，是这种每年两回、持续回馈股东的连续性，说明公司确实在赚钱，并且愿意分出来。<br><br>**安全边际**<br>0.82 的 PB 给出了账面价值上的保护垫。即使资产质量出现<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#7</td><td>601688 <small>华泰证券</small></td><td><strong>0.757</strong></td><td>10.0</td><td>0.9</td><td>9.7%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>这是一份从价值视角对华泰证券的质性诊断。券商生意模式不同于制造业，杠杆高、受周期影响大，所以看问题得调一下焦距。<br><br>**1. 估值水平 —— 便宜不便宜？**<br>现在这个价，**不贵，甚至有点冷清**。市盈率（PE）才10倍出头，就是说如果公司每年赚的钱不变，10年就能回本，在券商里算低的。更关键的是市净率（PB）破了1，股价跌到跟每股净资产差不多了。用大白话说，市场现在基本是按“清仓处理价”在给这家公司的家底儿估值，隐含的预期是未来不太赚钱。<br><br>**2. 财务质量 —— 是真赚钱还是账面富贵？**<br>ROE（股东投的钱能赚回多少）是9.71%，不算亮眼，但胜在真实。要注意，券商天生是高杠杆行业，这个ROE质量在同行里算中上游，不是靠堆砌更极端的风险换来的。真正让人刮目相看的是分红的大方。数据里一年分两次红，合计一年每股能分5块多（例如3.7+1.5），对19.55的股价来说，股息率相当可观，这是实打实拿回现金，说明公司赚的钱不是全趴在账上。<br><br>**3. 长期盈利能力 ——<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#8</td><td>600030 <small>中信证券</small></td><td><strong>0.755</strong></td><td>12.0</td><td>1.3</td><td>11.7%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>这家公司的数据呈现出一种“看着挺便宜、赚得也不少、分红还特别大方”的感觉，但仔细拆开看，其实结构上有几层值得琢磨的地方。<br><br>首先看估值。PE 11.69倍，PB 1.38倍，在券商这个行业里，绝对不算贵。历史分位给到0.705，说明现在价格比大部分时候都更划算。但券商股的“便宜”有个特点：它经常是跟着行情的影子，市场一冷，业绩就缩，PE会被动抬高，所以现在看到的低PE，未必说明未来赚钱能力就锁定在这里。<br><br>财务质量这块，ROE 11.68%不算惊艳，但在券商里属于中上水平。这个ROE没有靠明显加杠杆硬撑起来（和银行不一样），更多是靠自身的资本效率。不过券商业务的同质化程度很高，经纪、投行、资管，哪块都有一堆对手。ROE的稳定性和抗波动能力，比绝对值更重要。<br><br>长期盈利的亮点其实在分红上。最近几期分红，从2024年8月的4.75元，到后面的2.4、2.8、2.9，再到今年6月预期的4.1元，累计下来非常可观。这种派息力度，要么是公司真赚到了那么多现钱，要么就是某种特殊安排。考虑到券商盈利的强周期性，这种高频、高额的分红，需要确认究竟是常态，还是因为这两年属于行情大年，后面能不能撑住。<br><br>安全边际就比较微妙了。现在价格离账面净资产不远，PB不到1.4倍，理论上跌也跌不到哪里去。但券商这个行业，一旦市场转向，交易量萎缩、IPO收紧、自营盘回撤，几<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#9</td><td>000858 <small>五粮液</small></td><td><strong>0.754</strong></td><td>26.8</td><td>2.6</td><td>10.1%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>这家公司的估值算不上便宜，PE 23 倍多，比很多大盘蓝筹贵，但在白酒里不算离谱，估值分位偏高说明市场给的溢价还在。质量分位极高，赚钱的底子没得挑，10% 出头的 ROE 看着不起眼，但结合后面频繁且大额的分红看，实际盈利能力被低估了。成长性也不错，市场对它还有持续增长的预期。<br><br>财务上最抢眼的是分红，一年之内连着分了好几次，每股派息加起来吓人，这要么是账上现金多到没处花、回馈股东诚意足，要么是阶段性特殊派发，不管怎样现金流肯定不假。ROE 不爆炸但负债肯定也不高，钱是自己赚出来的，不是借来的。自由现金流没法直接看到，但就冲这分红力度，差不了。<br><br>长年赚钱能力靠分红记录就能印证，分红连续、量还大，ROE 也稳定在双位数，利润稳步增长的架子基本在。安全边际这块，当前价离历史便宜价不算远，行业万一转冷，公司底子厚、现金多，抗风险能力比多数同行强。<br><br>需要留心的是，高分红如果不可持续，市场预期可能会落空。另外白酒行业整体受政策和消费习惯影响大，高估值靠的是未来持续增长的信仰，一旦增速放缓，估值可能往下调。股东户数最近没变化，说明筹码没集中也没散，大家心态比较稳。<br><br>综合看，这是个底子扎实、现金流真实、对股东大方的公司，护城河在品牌和渠道上。让人不太踏实的不是公司本身，而是行业未来十年还会不会像过去十年那么好。如果对高端消费的长期需求有信心，拿着它大概率能睡得着觉。<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#10</td><td>002142 <small>宁波银行</small></td><td><strong>0.753</strong></td><td>7.2</td><td>0.9</td><td>13.2%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>**估值水平**<br>当前PE(TTM) 6.75倍，PB 0.87倍（即股价<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#11</td><td>601009 <small>南京银行</small></td><td><strong>0.751</strong></td><td>6.4</td><td>0.7</td><td>11.8%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>这家银行的估值确实便宜，PE仅6.02倍，PB更是低至0.72，相当于用7折买它的净资产，市场给了个“打折价”。ROE有11.82%是真实的赚钱能力，但打分系统显示成长分位偏低，说明市场不认为它能高速扩张。<br><br>财务质量上，ROE保持在两位数，但银行这门生意天生高杠杆，风险藏在资产负债表里，目前数据缺失了负债率和自由现金流，这是个盲区。从分红看，近5期累计派息超过16元，非常慷慨。但股东户数在2026年3月底出现环比1.16%的异常增长，这个数据点后续需要琢磨。<br><br>长期盈利能力方面，分红连续性不错，但金额波动较大，有的年份高有的年份低，缺乏平滑增长。综合分0.751说明质地还行，但安全边际不单纯是便宜，PB低于1意味着市场觉得它的资产可能“不值账面数”，需要关注资产质量，比如不良贷款率这些更底层的指标。<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#12</td><td>600061 <small>国投资本</small></td><td><strong>0.747</strong></td><td>12.5</td><td>0.8</td><td>6.2%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>国投资本：价值视角的快速扫描<br><br>**1. 估值水平**<br>当前PE 12.08倍，PB 0.74倍，股价处于“破净”（低于每股净资产）状态。从估值分位0.828来看，市场对其定价处于历史偏便宜的区间。12倍的PE，通俗说就是以当前利润水平，12年能回本，在金融资产里不算贵，但关键要看利润的质量和稳定性。<br><br>**2. 财务质量**<br>- **赚钱的真本事（ROE）**：6.20%的ROE偏低。打个比方，公司每100块钱的股东本钱，一年只赚6块2，略高于银行理财，但对权益投资来说不算出众。<br>- **隐藏的杠杆**：数据里没给负债率和现金流，但PB极低（0.74）而ROE仅6.2%，这暗示公司可能资产规模很大但利润率很薄，或者有高杠杆在支撑。金融企业ROE能到15%以上才算优秀，6%只能说是“过日子”水平。<br><br>**3. 长期盈利能力**<br>- **分红趋势**：这是最矛盾的地方。从2021年每股派1.96元，一路降到2023年的0.92元，尽管2024年回升到1.1元，但整体<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#13</td><td>000001 <small>平安银行</small></td><td><strong>0.736</strong></td><td>5.2</td><td>0.5</td><td>9.2%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>这是针对平安银行(000001)的价值视角质性诊断，基于提供的数据。<br><br>**1. 估值水平 —— 一眼看胖瘦**<br>- **PE 4.74倍，PB 0.45倍**。什么意思呢？PB 0.45相当于市场只愿意用不到5毛钱去买它账上1块钱的净资产，这是典型的“破净”状态。估值分位高达0.946，说明这个价格已经是历史低位附近，市场给的估值极低。<br><br>**2. 财务质量 —— 赚钱的本事硬不硬？**<br>- **ROE 9.18%**。这个数字很关键。ROE不到10%，意味着股东每投入100块，一年只赚回9块多，赚钱效率不算出色。对于银行，这是其盈利能力的核心指标，个位数的ROE说明它在用资本生钱这件事上，能力相对平庸。<br><br>**3. 长期盈利能力 —— 看长不看短**<br>- **分红数据存在重大异常需要警惕**。数据里2024年6月每股派息7.19元，而股价才10.52元，单次股息率高达68%，这不符合常理。后面的2025年、2026年也出现3.6元左右的高派息。这极有可能是**包含了特别股息或数据错误**，不能认为是常规盈利能力。我们必须清醒：从9%的ROE看，长期维持这么高的分红是不可持续的，那是分家底，不是分利润。<br>- 成长分位0.407也印证了，增长动力一般。<br><br>**4. 安全边际 —— 扛不扛揍？**<br>- **资产打折卖**。PB 0.45提供了很强的安全边际，等于是用破产清算的价格买一家还在正常经营的银行。只要银行的资产质量没有毁灭性的崩坏，这个价格就提供了一个厚实的保护垫。但前提是，它的资产没有大窟窿。<br><br>**5.<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#14</td><td>601077 <small>渝农商行</small></td><td><strong>0.731</strong></td><td>6.4</td><td>0.6</td><td>9.2%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>### 估值水平<br>当前市盈率 5.77 倍，市净率 0.53 倍，单看数字很便宜，尤其是市净率破净幅度接近一半，相当于市场只给这家银行的净资产打了五折。估值分位 0.83 也提示目前估值在历史区间里属于偏低水平。不过银行板块整体估值中枢长期下移，不能只看绝对便宜，还要结合资产质量看。<br><br>### 财务质量<br>年化 ROE 9.17%，放在非金融企业里算不错，但在上市农商行里不算突出，属于中规中矩的水平。质量分位 0.756 表示赚钱能力尚可。银行天然高杠杆经营，ROE 背后对应的负债率必然不低，这是行业特征而非个例风险。自由现金流这一项数据缺失，无法直接判断内生资本补充能力，但银行经营现金流往往与报表利润差异较大，需要额外关注不良生成和拨备覆盖。<br><br>### 长期盈利能力<br>分红动作非常密集，近两年每年两次派息，2025 年全年合计派息约 3.046 元，对应当前股价股息率极高。但这里有个数据需要冷静看待：分红日期跨度从 2024 年中到 2026 年初，“近五期”实际<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#15</td><td>002466 <small>天齐锂业</small></td><td><strong>0.726</strong></td><td>51.6</td><td>2.5</td><td>5.2%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>**估值水平**  <br>当前市盈率 47 倍，市净率 2.3 倍，从数值上看不算便宜。综合分位里估值分位只有 0.456，说明市场对它的定价没有给太多“折扣”，价格并没有明显低于历史或内在估值中枢。对长期价值投资人来说，这个位置不具备一眼可见的便宜。<br><br>**财务质量**  <br>TTM 口径 ROE 只有 5.16%，这个回报水平相当普通，甚至比不上很多平庸的生意。若和它过去分红记录比对，会看到一个强烈反差：2023 年每股派现 30 元、2024 年中期又派 13.5 元，豪气分红背后更多是前两年锂价暴涨带来的阶段性超额利润，而不是稳定盈利能力。ROE 波动极大、分红剧烈跳跃，本身就说明这不是一门稳定的生意。另外缺失资产负债率与自由现金流数据，无法评估它加了多少杠杆、真实造血能力如何，这是一个隐患。<br><br>**长期盈利能力**  <br>分红记录很诚实地画出了周期曲线：2017 到 2019 年每股派一两块钱，中间有几年甚至没分红，然后突然跳到极高水平。这反映锂行业典型的“三年不开张，开张吃三年”。近五年净利润 CAGR 缺少精确数据，但从 ROE 与分红节奏推测，利润大起大落，不具备稳定的复利特征。这不是价值投资偏爱的“稳步爬坡型”，而是坐过山车型。<br><br>**安全边际**  <br>现在九千多亿市值、四十多倍盈利，价格已经把锂价高位时的乐观预期打进去了不少，安全边际并不厚。一旦锂资源价格回归平淡，利润会断崖式收缩，那时市盈率会被动飙高，甚至转亏损，价格支撑就会变弱。从它大比例分红来看，公司不太像在积累资本应对寒冬，更像在顺境时大把分钱，这对长期安全边际不是加分项。<br><br>**风险点<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#16</td><td>600036 <small>招商银行</small></td><td><strong>0.724</strong></td><td>6.6</td><td>0.8</td><td>13.3%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>这家公司的核心特征是：**估值趴在地板上，分红手笔极大，但成长性几乎枯竭，是一个典型的“类债券”型标的。**<br><br>先看估值的矛盾。PE只有6.23倍，PB 0.83倍，股价已经跌破每股净资产，相当于市场认为公司的资产正在缩水。估值分位高达0.873，说明现在的价格比历史上绝大多数时候都便宜。但这么便宜，是因为市场在担心什么。<br><br>再看分红数据里的“时间旅行者”和最大疑点。数据里有一条是“2026-01-16: 每股派息 10.13 元”，这在当前时间点上属于异常的未来数据，极可能是数据库预测值或错误录入，应无视它。真正值得关注的是连续四年的真实分红：从2022年的15.22元涨到2025年的20元。注意，这里的单位是“每股派息”，而当前股价才37.26元。如果按2025年每股20元的分红算，股息率高达53.6%，这远远超出正常范围，说明这里的分红数字可能是“每10股”的口径，或者数据源单位标错了。按照常规，招商银行2024年财报对应的每股派息实际约2元，股息率5%-6%才是合理水平。这是个需要警惕的数据失真信号。<br><br>财务质量上，ROE有13.28%，不算顶尖，但在持续降息、净息差收窄的银行业里，属于站得住脚的水平。质量分位0.749，印证了赚钱能力仍在，但别被高分麻痹——银行的ROE高度依赖息差和杠杆，同质化严重，没什么真正的“护城河”。<br><br>最刺眼的是成长分位，只有0.375，不及格。这就是市场担心的核心：银行就是个成熟得不能再成熟的行业，靠规模驱动的增长<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#17</td><td>300628 <small>亿联网络</small></td><td><strong>0.723</strong></td><td>17.9</td><td>4.8</td><td>29.1%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>## 估值水平<br><br>当前PE(TTM) 15.61倍，PB 5.05倍。  <br>光看PE，在通信设备这类轻资产、高毛利的生意里不算贵，但PB超过5倍，说明市场给它的净资产很高溢价。这背后是它常年惊人的ROE在支撑——全年口径ROE达到29.08%，相当于每100块净资产一年能赚29块，这种盈利能力如果真实可持续，PB高一些是合理的。  <br>不过PB高也意味着一旦利润下滑，股价的下跌空间会比低PB公司大得多。<br><br>## 财务质量<br><br>ROE高达29%，本身是一个极强的赚钱信号。但要注意ROE的来源：  <br>数据中没有给出负债率、毛利率、净利率和自由现金流等细节，只能从PB和ROE反推。如果ROE真实，那企业肯定是轻资产、高毛利模式，赚的是真金白银。通信终端（IP话机、视频会议）行业符合这个特征。  <br>但是，提供的分红记录存在明显异常：近两年每股派息高达5元、6元、9元甚至13元，当前股价才33.2元，股息率高达15%~39%，这完全不符合商业常理。通常这意味着送股/转增或被错误记录为派息，实际每股现金分红可能远低于此，或者数据本身有误。此处数据冲突，分红能力无法据此判断，需核实实际现金分红金额。<br><br>## 长期盈利能力<br><br>分红记录（即便存在单位疑义）至少显示公司在持续回馈股东，近5期都有分派记录，说明管理层重视股东回报。综合质量分位0.906，在模型评估中盈利能力很强。  <br>近5年净利润CAGR、ROE稳定性等关键长期数据缺失，只能从ROE(TTM)29%推断至少当前盈利水平非常突出。但要注意，通信行业受技术迭代和海外需求影响较大，历史上亿联确实有过高速增长，但能否持续保持近30%的ROE，需要看到连续多年的实际数据支撑，目前无法从提供的数据中确认趋势。<br><br>## 安全边际<br><br>PE 15倍，对于一家ROE接近30%的公司，如果盈利真实且可持续，这个价格可能处在合理偏低的位置。但前提是盈利质量没问题、未来不会大幅下滑。  <br>估值分位0.582，表示模型判断当前估值不算特别便宜，处于中间区间。如果行业需求变差——比如欧美企业支出下降、竞争加剧导致毛利率下行，PB高达5倍会放大跌幅。安全边际不够厚，扛风险的能力要看现金流和负债水平，这些数据都缺失，无法准确判断。<br><br>## 风险点<br><br>第一是数据质量问题：分红金额极不合理，PE和PB有矛盾（高RO<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#18</td><td>002558 <small>巨人网络</small></td><td><strong>0.720</strong></td><td>22.8</td><td>3.5</td><td>16.6%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>### 估值水平<br>当前股价 23.9 元，市盈率（PE）约 18 倍，市净率（PB）约 2.85 倍。从估值分位 0.38 来看，价格在自身历史及同行中不算特别便宜，大致处于合理或略偏贵的区间。这个 PE 意味着假设利润不变，需要近 18 年回本，对于一家成熟期游戏公司来说，性价比较为普通。<br><br>### 财务质量<br>数据给出的全年净资产收益率（ROE）是 16.57%，这个数字相当不错，说明公司用股东的钱生钱的能力较强。不过需要注意的是，此处缺少毛利率、净利率、负债率和自由现金流这几项关键数据，我们无法判断高 ROE 是靠高毛利的产品还是靠借钱加杠杆实现的。财务透明度存在盲点。<br><br>### 长期盈利能力<br>从分红记录看，公司有极强的分红意愿和能力。近两年多实现了每半年一次高额派息，且金额有明显增长，从每股 0.8 元涨到最近的 1.9 元。这说明公司赚的是真金白银，且愿意回馈股东。成长分位高达 0.963，结合分红增长，印证了其盈利在过去几年有不错的复合增长（CAGR），不是“靠单年”的暴发户。<br><br>### 安全边际<br>价格相对于其赚钱能力和分红水平，吸引力中等偏下，安全边际不算厚。但公司底子硬、质量分位 0.939，万一行业变差，其强劲的现金流和持续分红能力能为股价提供<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#19</td><td>601066 <small>中信建投</small></td><td><strong>0.720</strong></td><td>16.7</td><td>2.0</td><td>12.5%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>这家公司的特点是赚钱能力不错,RoE 做到 12.49% 在券商里算给股东挣钱的,分红历史也大方,最近两次都是每股 1.65 元。但别被成长分位的高数字迷住,券商业绩本来就是三年不开张、开张吃三年的强周期波动,PB 2.24 倍也不能叫便宜。真正让人需要掂量的是股东户数突然暴涨 13.6%,这个变化挺扎眼。整体而言,经营底子算厚实,只是当前价格的安全垫不够让人彻底安心,波动恐怕躲不过。<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+<tr><td>#20</td><td>601916 <small>浙商银行</small></td><td><strong>0.718</strong></td><td>6.8</td><td>0.4</td><td>6.7%</td><td><details style='font-size:0.88em;color:#333'><summary style='cursor:pointer;color:#1a6e38;font-weight:bold'>🤖 AI 解读 (点击展开)</summary><div style='margin-top:6px;max-height:240px;overflow-y:auto;padding:8px;background:#f8fcf8;border-left:3px solid #27ae60;border-radius:4px'>## 估值水平  <br>当前 PE 6.33 倍、PB 0.45 倍，单看数字很便宜。PB 不到 1 意味着市场认为它的净资产“有水分”，或者未来赚不到什么钱。银行股普遍破净，0.45 的 PB 在同行里算偏低水平，估值分位 0.947 也说明比历史上绝大多数时候都“便宜”。但银行便宜很多时候不是错杀，而是市场对资产质量、息差收窄的真实担忧。<br><br>## 财务质量  <br>ROE 只有 6.73%，这个数字放在任何行业都不耀眼，在银行里也属于下游。银行是典型高杠杆生意，ROE 不高，意味着资产回报率更薄。好在财报没显示巨额不良或拨备恶性缺口，换手率低代表筹码相对稳定。但要注意，这类高杠杆行业看 ROE 必须结合负债结构，6.73% 的 ROE 背后是几十倍杠杆撑起来的，真实经营韧性没那么足。<br><br>## 长期盈利能力  <br>近 5 期分红保持连续性，但金额在波动下行：从 2023 年每 10 股派 2.1 元，到近一两期降到 1.31、1.56 元。这不是“稳定派息”信号，更像盈利承压下的调整。成长分位只有 0.317，说明利润扩张动力很弱，未来能维持当前分红规模已算不错。长期看，它更像“守成型”而非“成长型”资产。<br><br>## 安全边际  <br>以 PB 0.45 计，相当于用不到一半的价格买它的账面资产，理论上跌也跌不到哪去。但安全边际的真正前提是资产真值那个价。银行业务同质化严重、盈利受利率政策影响大，如果贷款质量恶化，账面资产会缩水，便宜就可能变成陷阱。另外，分红虽然绝对值看着不小，可持续性要打个问号。<br><br>## 风险点  <br>最大<br><br>---<br>⚠️ **本分析为 AI 生成 (DeepSeek), 基于公开数据自动整理, 不构成投资建议。** 选股仍由数学公式打分, AI 仅写解读。回测跑赢不等于实盘赚钱。</div></details></td></tr>
+</tbody>
+</table>
+</div>
+
+  <!-- ===== §2 策略回测表现 vs 沪深300 ===== -->
+  <h2>§2 策略回测表现 vs 沪深300</h2>
+  <div class="backtest-card">
+    <div class="card">
+<table>
+<thead><tr><th>指标</th><th>值</th></tr></thead>
+<tbody>
+<tr><td>策略累计收益</td><td><strong>20.7%</strong></td></tr>
+<tr><td>沪深300 同期</td><td>-8.0%</td></tr>
+<tr><td>超额收益</td><td style="color:#27ae60;font-weight:bold">6.3%</td></tr>
+<tr><td>Sharpe 比率</td><td>0.23</td></tr>
+<tr><td>最大回撤</td><td>-27.0%</td></tr>
+<tr><td>回测期间</td><td>2022-01 ~ 2026-04</td></tr>
+<tr><td>换仓次数</td><td>18 季度</td></tr>
+</tbody>
+</table>
+<p class="meta" style="margin-top:8px;color:#d4380d">⚠️ 回测区间约 4 年（2022-2026），是单一市场环境 —— 结论是「参考」，不是「铁证」。换一段历史（牛市 / 熊市 / 震荡市）结果可能完全不同。</p>
+<p class="meta" style="margin-top:6px;color:#d4380d">⚠️ 这段回测还偏乐观：样本小、选股池有幸存者偏差、超额收益主要靠 2024 年单独一年、信息比率 IR 偏低（说明这点超额并不稳）。「回测跑赢」不等于「未来实盘能赚钱」。</p>
+</div>
+  </div>
+
+  <!-- ===== §3 历史准确率（P14 落盘后可用）===== -->
+  <h2>§3 历史准确率</h2>
+  <div class="card">
+    <p class='meta'>暂无历史准确率数据（P14 落盘后可用）</p>
+  </div>
+
+  <!-- ===== §4 运行元数据 ===== -->
+  <h2>§4 运行元数据</h2>
+  <div class="card">
+    <table>
+      <tr><td><strong>报告生成时间</strong></td><td>2026-06-19T08:12:53</td></tr>
+      <tr><td><strong>总耗时</strong></td><td>92.17 秒</td></tr>
+      <tr><td><strong>数据截至日</strong></td><td>2026-06-19</td></tr>
+      <tr><td><strong>股票池规模</strong></td><td>300 只</td></tr>
+      <tr><td><strong>预测 JSON 落盘</strong></td><td><code>artifacts/daily_reports/predictions_2026-06-19.json</code></td></tr>
+      <tr><td><strong>运行错误</strong></td><td>无</td></tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    A股量化价值选股学习项目 · 仅供学习 · 不构成投资建议<br>
+    generated by astock-quant Stage 5
+  </div>
+
+</div>
+</body>
+</html>
